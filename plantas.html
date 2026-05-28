@@ -11,41 +11,188 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
 
   <style>
-    .plant-card {
-      background:var(--clr-surface); border-radius:var(--r-md);
-      border:1px solid var(--clr-border); overflow:hidden;
-      box-shadow:var(--shadow-sm); transition:all var(--t-fast);
-    }
-    .plant-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-md); }
-    .plant-card-head {
-      padding:1.5rem;
-      background:linear-gradient(135deg,var(--clr-safe-bg),#f0fdf4);
-      border-bottom:1px solid var(--clr-border);
-      display:flex; align-items:center; gap:1rem;
-    }
-    .plant-card-head.danger-head { background:linear-gradient(135deg,var(--clr-danger-bg),#fff1f2); }
-    .plant-card-head.caution-head { background:linear-gradient(135deg,var(--clr-caution-bg),#fffbeb); }
-    .plant-emoji { font-size:2.5rem; }
-    .plant-name { font-weight:800; font-size:1.1rem; margin-bottom:.2rem; }
-    .plant-sci  { font-style:italic; font-size:.8rem; color:var(--clr-text-muted); }
-    .plant-body { padding:1.5rem; font-size:.875rem; }
-    .plant-uses { background:var(--clr-safe-bg); border-radius:var(--r-sm); padding:.75rem 1rem; margin:1rem 0; }
-    .plant-uses h5 { color:var(--clr-safe); font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:.35rem; }
-    .plant-risks { background:var(--clr-danger-bg); border-radius:var(--r-sm); padding:.75rem 1rem; margin:1rem 0; }
-    .plant-risks h5 { color:var(--clr-danger); font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:.35rem; }
-    .plant-risk-tags { display:flex; flex-wrap:wrap; gap:.35rem; margin-top:.5rem; }
-    .plant-risk-tag { font-size:.75rem; padding:.2rem .7rem; border-radius:100px; background:var(--clr-danger-bg); color:var(--clr-danger); font-weight:600; }
+    /* ====== PLANTAS — Green Botanical Theme ====== */
+    :root {
+      /* Overriding global styling tokens to replace the pastel pink with botanical green/sage tones */
+      --clr-primary:       #1b4332; /* Deep forest green */
+      --clr-primary-dk:    #081c15; /* Dark forest green */
+      --clr-primary-lt:    #52b788; /* Soft mint green */
+      --clr-secondary:     #2d6a4f; /* Middle green */
+      --clr-secondary-lt:  #74c69d; /* Soft sage green */
+      --clr-accent:        #40916c; /* Accent green */
+      --clr-accent-lt:     #d8f3dc; /* Very light sage green background */
+      
+      --clr-bg:            #f2f9f5; /* Light botanical green pastel background */
+      --clr-surface:       #ffffff;
+      --clr-border:        #c7ebd4; /* Sage green/mint border */
+      --clr-overlay:       rgba(27, 67, 50, 0.04); /* Soft herbal overlay */
 
-    .myth-card {
-      border-radius:var(--r-md);
-      padding:1.5rem;
-      display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;
-      background:var(--clr-surface); border:1px solid var(--clr-border);
-      box-shadow:var(--shadow-sm);
+      --plt-green-dark: #0d3321;
+      --plt-green-mid:  #1a5c38;
+      --plt-green-lt:   #2d8a56;
+      --plt-green-glow: rgba(45,138,86,0.25);
+      --plt-safe-bg:    #f0fdf4;
+      --plt-safe-border:#86efac;
     }
-    .myth-false { border-left:4px solid var(--clr-danger); }
-    .myth-true  { border-left:4px solid var(--clr-safe); }
-    .myth-label { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em; margin-bottom:.5rem; }
+
+    /* ── Plant card ────────────────────────────────── */
+    .plant-card {
+      width: 340px;
+      flex: 0 1 340px;
+      background: white;
+      border-radius: 16px;
+      border: 1px solid #d1fae5;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(22,101,52,0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex; flex-direction: column;
+    }
+    .plant-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(22,101,52,0.15);
+    }
+
+    /* ── Card image area ────────────────────────────── */
+    .plant-img-wrap {
+      width: 100%; height: 180px;
+      overflow: hidden; position: relative;
+      background: #ffffff;
+    }
+    .plant-img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: contain; /* Changed from cover to contain so the entire plant is visible */
+      background: #ffffff;
+      padding: 8px; /* Give space around the image */
+      transition: transform 0.4s ease;
+    }
+    .plant-card:hover .plant-img-wrap img { transform: scale(1.06); }
+
+    /* ── Risk ribbon overlay on image ────────────────── */
+    .plant-risk-ribbon {
+      position: absolute; top: 10px; right: 10px;
+      font-size: .7rem; font-weight: 700;
+      padding: .25rem .75rem;
+      border-radius: 100px;
+      backdrop-filter: blur(8px);
+      letter-spacing: .04em;
+    }
+    .plant-risk-ribbon.danger  { background: rgba(220,38,38,0.85); color: white; }
+    .plant-risk-ribbon.caution { background: rgba(217,119,6,0.85);  color: white; }
+    .plant-risk-ribbon.safe    { background: rgba(22,163,74,0.85);  color: white; }
+
+    /* ── Card header info (below image) ────────────── */
+    .plant-card-head {
+      padding: 1rem 1.25rem 0.5rem;
+      background: white;
+      display: flex; align-items: center; gap: 0.75rem;
+      border-bottom: 2px solid #dcfce7;
+    }
+    .plant-card-head.danger-head { border-bottom-color: #fecaca; background: #fff8f8; }
+    .plant-card-head.caution-head { border-bottom-color: #fed7aa; background: #fffbf0; }
+    .plant-emoji { font-size: 1.8rem; }
+    .plant-name { font-weight: 800; font-size: 1.05rem; margin-bottom: .15rem; color: #064e3b; }
+    .plant-name.danger-name  { color: #7f1d1d; }
+    .plant-name.caution-name { color: #78350f; }
+    .plant-sci  { font-style: italic; font-size: .8rem; color: #6b7280; }
+
+    /* ── Card body ─────────────────────────────────── */
+    .plant-body { padding: 1rem 1.25rem 1.25rem; font-size: .875rem; flex: 1; }
+    .plant-uses {
+      background: #f0fdf4;
+      border-radius: 8px; padding: .65rem .9rem; margin: .75rem 0;
+      border-left: 3px solid #4ade80;
+    }
+    .plant-uses h5 { color: #15803d; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; margin-bottom: .3rem; }
+    .plant-risks {
+      background: #fff1f2;
+      border-radius: 8px; padding: .65rem .9rem; margin: .75rem 0;
+      border-left: 3px solid #f87171;
+    }
+    .plant-risks h5 { color: #b91c1c; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; margin-bottom: .3rem; }
+    .plant-risk-tags  { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .5rem; }
+    .plant-risk-tag   { font-size: .72rem; padding: .2rem .65rem; border-radius: 100px; background: #fee2e2; color: #991b1b; font-weight: 600; }
+    .plant-risk-tag.caution { background: #fef3c7; color: #92400e; }
+
+    /* ── Centered grid for plant cards (using Flexbox to center last row remainder) ── */
+    .plants-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    /* ── Mobile Responsive (2 columns with compact font sizes) ── */
+    @media (max-width: 768px) {
+      .plants-grid {
+        gap: 0.75rem;
+      }
+      .plant-card {
+        flex: 0 1 calc(50% - 0.375rem);
+        min-width: 145px;
+        border-radius: 12px;
+      }
+      .plant-img-wrap {
+        height: 110px;
+      }
+      .plant-risk-ribbon {
+        font-size: 0.58rem;
+        padding: 0.15rem 0.45rem;
+        top: 6px; right: 6px;
+      }
+      .plant-card-head {
+        padding: 0.75rem 0.85rem;
+        gap: 0.5rem;
+      }
+      .plant-emoji {
+        font-size: 1.15rem;
+      }
+      .plant-name {
+        font-size: 0.82rem;
+        font-weight: 800;
+        line-height: 1.2;
+      }
+      .plant-sci {
+        font-size: 0.65rem;
+        line-height: 1.2;
+      }
+      .plant-body {
+        padding: 0.75rem 0.85rem;
+      }
+      .plant-body p {
+        font-size: 0.73rem;
+        line-height: 1.4;
+        margin-bottom: 0.5rem;
+      }
+      .plant-uses, .plant-risks {
+        padding: 0.45rem 0.65rem;
+        margin: 0.45rem 0;
+        border-left-width: 2.5px;
+      }
+      .plant-uses h5, .plant-risks h5 {
+        font-size: 0.62rem;
+        margin-bottom: 0.15rem;
+      }
+      .plant-risk-tag {
+        font-size: 0.62rem;
+        padding: 0.12rem 0.35rem;
+      }
+    }
+
+    /* ── Myth cards ─────────────────────────────────── */
+    .myth-card {
+      border-radius: 14px; padding: 1.5rem;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;
+      background: white; border: 1px solid #d1fae5;
+      box-shadow: 0 4px 16px rgba(22,101,52,0.08);
+    }
+    .myth-false { border-left: 4px solid #f87171; padding-left: .75rem; }
+    .myth-true  { border-left: 4px solid #4ade80; padding-left: .75rem; }
+    .myth-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; margin-bottom: .5rem; display: flex; align-items: center; gap: .3rem; }
+    @media (max-width: 580px) {
+      .myth-card { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -68,7 +215,7 @@
   <div id="mobile-nav-wrap" class="nav-mobile"><div id="mobile-nav"></div></div>
 </nav>
 
-<header class="page-hero" style="background:linear-gradient(135deg,#1a4731 0%,#2d7a4f 50%,#6B3FA0 100%);">
+<header class="page-hero" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('assets/planta_manzanilla.png') center/cover no-repeat;">
   <div class="page-hero-content container">
     <span class="section-tag" style="background:rgba(255,255,255,.15); color:white;">Sección 4</span>
     <h1>Plantas Medicinales en el Embarazo</h1>
@@ -204,15 +351,19 @@
       </p>
     </div>
 
-    <div class="grid-auto stagger-parent">
+    <div class="plants-grid stagger-parent">
 
+      <!-- 1. Ruda -->
       <div class="plant-card stagger-child reveal">
+        <div class="plant-img-wrap">
+          <img src="assets/planta_ruda.png" alt="Ruda (Ruta graveolens)" loading="lazy">
+          <span class="plant-risk-ribbon danger">⛔ Abortiva</span>
+        </div>
         <div class="plant-card-head danger-head">
-          <div class="plant-emoji"><i data-lucide="leaf" class="lucide-icon" aria-hidden="true"></i></div>
+          <div class="plant-emoji">🌿</div>
           <div>
-            <div class="plant-name">Ruda</div>
+            <div class="plant-name danger-name">Ruda</div>
             <div class="plant-sci">Ruta graveolens</div>
-            <div style="margin-top:.4rem;"><span class="risk-badge danger" style="font-size:.7rem;"><i data-lucide="ban" class="lucide-icon" aria-hidden="true"></i> Abortiva</span></div>
           </div>
         </div>
         <div class="plant-body">
@@ -234,13 +385,17 @@
         </div>
       </div>
 
+      <!-- 2. Árnica -->
       <div class="plant-card stagger-child reveal">
+        <div class="plant-img-wrap">
+          <img src="assets/planta_arnica.png" alt="Árnica (Arnica montana)" loading="lazy">
+          <span class="plant-risk-ribbon danger">⛔ Tóxica</span>
+        </div>
         <div class="plant-card-head danger-head">
-          <div class="plant-emoji"><i data-lucide="flower-2" class="lucide-icon" aria-hidden="true"></i></div>
+          <div class="plant-emoji">🌼</div>
           <div>
-            <div class="plant-name">Árnica</div>
+            <div class="plant-name danger-name">Árnica</div>
             <div class="plant-sci">Arnica montana</div>
-            <div style="margin-top:.4rem;"><span class="risk-badge danger" style="font-size:.7rem;"><i data-lucide="ban" class="lucide-icon" aria-hidden="true"></i> Tóxica</span></div>
           </div>
         </div>
         <div class="plant-body">
@@ -262,13 +417,17 @@
         </div>
       </div>
 
+      <!-- 3. Manzanilla -->
       <div class="plant-card stagger-child reveal">
+        <div class="plant-img-wrap">
+          <img src="assets/planta_manzanilla.png" alt="Manzanilla (Matricaria chamomilla)" loading="lazy">
+          <span class="plant-risk-ribbon caution">⚠️ Precaución</span>
+        </div>
         <div class="plant-card-head caution-head">
-          <div class="plant-emoji"><i data-lucide="wheat" class="lucide-icon" aria-hidden="true"></i></div>
+          <div class="plant-emoji">☘️</div>
           <div>
-            <div class="plant-name">Manzanilla</div>
+            <div class="plant-name caution-name">Manzanilla</div>
             <div class="plant-sci">Matricaria chamomilla</div>
-            <div style="margin-top:.4rem;"><span class="risk-badge caution" style="font-size:.7rem;"><i data-lucide="zap" class="lucide-icon" aria-hidden="true"></i> Precaución</span></div>
           </div>
         </div>
         <div class="plant-body">
@@ -281,20 +440,24 @@
             <h5>Precauciones</h5>
             <p>Azuleno y otros flavonoides pueden estimular contracciones en dosis altas. Puede potenciar anticoagulantes.</p>
             <div class="plant-risk-tags">
-              <span class="plant-risk-tag">Dosis altas: uterotónica</span>
-              <span class="plant-risk-tag">Interacción con anticoagulantes</span>
+              <span class="plant-risk-tag caution">Dosis altas: uterotónica</span>
+              <span class="plant-risk-tag caution">Interacción con anticoagulantes</span>
             </div>
           </div>
         </div>
       </div>
 
+      <!-- 4. Sábila / Aloe vera -->
       <div class="plant-card stagger-child reveal">
+        <div class="plant-img-wrap">
+          <img src="assets/planta_aloe.png" alt="Aloe vera / Sábila" loading="lazy">
+          <span class="plant-risk-ribbon danger">⛔ Contraindicado</span>
+        </div>
         <div class="plant-card-head danger-head">
-          <div class="plant-emoji"><i data-lucide="leaf" class="lucide-icon" aria-hidden="true"></i></div>
+          <div class="plant-emoji">🌵</div>
           <div>
-            <div class="plant-name">Sábila / Aloe vera</div>
+            <div class="plant-name danger-name">Sábila / Aloe vera</div>
             <div class="plant-sci">Aloe vera (gel interno)</div>
-            <div style="margin-top:.4rem;"><span class="risk-badge danger" style="font-size:.7rem;"><i data-lucide="ban" class="lucide-icon" aria-hidden="true"></i> Contraindicado</span></div>
           </div>
         </div>
         <div class="plant-body">
@@ -315,13 +478,17 @@
         </div>
       </div>
 
+      <!-- 5. Epazote -->
       <div class="plant-card stagger-child reveal">
-        <div class="plant-card-head caution-head">
-          <div class="plant-emoji"><i data-lucide="sprout" class="lucide-icon" aria-hidden="true"></i></div>
+        <div class="plant-img-wrap">
+          <img src="assets/planta_epazote.png" alt="Epazote (Dysphania ambrosioides)" loading="lazy">
+          <span class="plant-risk-ribbon danger">⛔ Evitar</span>
+        </div>
+        <div class="plant-card-head danger-head">
+          <div class="plant-emoji">🌻</div>
           <div>
-            <div class="plant-name">Epazote</div>
+            <div class="plant-name danger-name">Epazote</div>
             <div class="plant-sci">Dysphania ambrosioides</div>
-            <div style="margin-top:.4rem;"><span class="risk-badge danger" style="font-size:.7rem;"><i data-lucide="ban" class="lucide-icon" aria-hidden="true"></i> Evitar</span></div>
           </div>
         </div>
         <div class="plant-body">
@@ -341,27 +508,31 @@
         </div>
       </div>
 
+      <!-- 6. Jengibre -->
       <div class="plant-card stagger-child reveal">
+        <div class="plant-img-wrap">
+          <img src="assets/planta_jengibre.png" alt="Jengibre (Zingiber officinale)" loading="lazy">
+          <span class="plant-risk-ribbon caution">⚠️ Dosis limitada</span>
+        </div>
         <div class="plant-card-head caution-head">
-          <div class="plant-emoji"><i data-lucide="flower" class="lucide-icon" aria-hidden="true"></i></div>
+          <div class="plant-emoji">🌰</div>
           <div>
-            <div class="plant-name">Jengibre</div>
+            <div class="plant-name caution-name">Jengibre</div>
             <div class="plant-sci">Zingiber officinale</div>
-            <div style="margin-top:.4rem;"><span class="risk-badge caution" style="font-size:.7rem;"><i data-lucide="zap" class="lucide-icon" aria-hidden="true"></i> Dosis limitada</span></div>
           </div>
         </div>
         <div class="plant-body">
           <p>Uno de los pocos remedios naturales con cierta evidencia de seguridad y eficacia para las náuseas del embarazo. Sin embargo, dosis elevadas pueden aumentar el riesgo de sangrado.</p>
           <div class="plant-uses">
             <h5>Uso aceptado con precaución</h5>
-            <p>Tés suaves para náuseas del primer trimestre en dosis ≤1 g/día.</p>
+            <p>Tés suaves para náuseas del primer trimestre en dosis &le;1&thinsp;g/día.</p>
           </div>
           <div class="plant-risks">
             <h5>Precauciones</h5>
             <p>Dosis altas pueden tener efecto anticoagulante e inhibir prostaglandinas.</p>
             <div class="plant-risk-tags">
-              <span class="plant-risk-tag">Dosis altas: evitar</span>
-              <span class="plant-risk-tag">Anticoagulante potencial</span>
+              <span class="plant-risk-tag caution">Dosis altas: evitar</span>
+              <span class="plant-risk-tag caution">Anticoagulante potencial</span>
               <span class="plant-risk-tag caution">Máx 1g/día con médico</span>
             </div>
           </div>
@@ -551,7 +722,7 @@
         <ul class="footer-contact">
           <li><span class="icon"><i data-lucide="map-pin" class="lucide-icon" aria-hidden="true"></i></span><span>Universidad Pablo Guardado Chávez, Tuxtla Gutiérrez, Chiapas, México</span></li>
           <li><span class="icon"><i data-lucide="graduation-cap" class="lucide-icon" aria-hidden="true"></i></span><span>Licenciatura en Químico Farmacobiólogo</span></li>
-          <li><span class="icon"><i data-lucide="user-round" class="lucide-icon" aria-hidden="true"></i></span><span>Asesor: Mtro. Pérez Chávez Rodolfo Carlos</span></li>
+          <li><span class="icon"><i data-lucide="user-round" class="lucide-icon" aria-hidden="true"></i></span><span>Asesores: Mtro. P\u00e9rez Ch\u00e1vez Rodolfo Carlos &amp; Mtro. L\u00f3pez Ventura Daniel</span></li>
           <li><span class="icon"><i data-lucide="calendar-days" class="lucide-icon" aria-hidden="true"></i></span><span>Febrero – Julio 2026</span></li>
         </ul>
       </div>

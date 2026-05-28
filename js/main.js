@@ -172,13 +172,9 @@
     }
 
     /* ── Hero parallax on scroll ───────────────────────── */
-    const hero = document.querySelector('.hero');
-    if (hero) {
-      gsap.to(hero, {
-        yPercent: -12, ease: 'none',
-        scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.8 }
-      });
-    }
+    /* Disabled container-level parallax to prevent white gap underneath on scroll.
+       The floating orbs still parallax independently for a premium depth effect. */
+
 
     /* ── Section tags pop in ───────────────────────────── */
     gsap.utils.toArray('.section-tag').forEach(el => {

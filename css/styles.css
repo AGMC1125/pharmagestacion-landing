@@ -165,6 +165,18 @@ body.gsap-ready .gsap-slide-right { opacity: 0; }
 .stagger-child.visible,
 .stagger-child.animated                 { opacity: 1 !important; transform: none !important; }
 
+/* Escalonado para las cards de medicamentos */
+.med-card.reveal:nth-child(1) { transition-delay: 0.1s; }
+.med-card.reveal:nth-child(2) { transition-delay: 0.2s; }
+.med-card.reveal:nth-child(3) { transition-delay: 0.3s; }
+.med-card.reveal:nth-child(4) { transition-delay: 0.4s; }
+.med-card.reveal:nth-child(5) { transition-delay: 0.5s; }
+.med-card.reveal:nth-child(6) { transition-delay: 0.6s; }
+.med-card.reveal:nth-child(7) { transition-delay: 0.7s; }
+.med-card.reveal:nth-child(8) { transition-delay: 0.8s; }
+.med-card.reveal:nth-child(9) { transition-delay: 0.9s; }
+.med-card.reveal:nth-child(10) { transition-delay: 1.0s; }
+
 /* ── Typography ──────────────────────────────────────────── */
 h1, h2, h3, h4, h5 {
   font-family: var(--font-head);
@@ -903,7 +915,8 @@ section:not(.impact-section) .stat-number span {
 
 /* ── Hero section — Aurora Mesh ──────────────────────────── */
 .hero {
-  min-height: calc(100vh - var(--nav-h));
+  min-height: auto;
+  padding-bottom: 4rem; /* space for scroll indicator */
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;

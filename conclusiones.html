@@ -11,16 +11,52 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
 
   <style>
-    .qfb-role-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:1.5rem; margin:2rem 0; }
-    .qfb-role-card {
-      background:var(--clr-surface); border-radius:var(--r-md);
-      padding:1.5rem; border:1px solid var(--clr-border);
-      box-shadow:var(--shadow-sm); text-align:center;
-      transition:all var(--t-fast);
+    .qfb-role-grid { 
+      display: grid; 
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem; 
+      margin: 2rem 0; 
     }
-    .qfb-role-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-md); }
-    .qfb-role-icon { font-size:2.5rem; margin-bottom:1rem; }
-    .qfb-role-title { font-weight:700; color:var(--clr-secondary); margin-bottom:.5rem; }
+    .qfb-role-card {
+      background: var(--clr-surface); border-radius: var(--r-md);
+      padding: 1.25rem; border: 1px solid var(--clr-border);
+      box-shadow: var(--shadow-sm); text-align: left;
+      transition: all var(--t-fast);
+      display: grid; 
+      grid-template-columns: auto 1fr;
+      grid-template-areas: 
+        "icon title"
+        "icon desc";
+      column-gap: 1rem;
+      row-gap: 0.25rem;
+      align-items: start;
+    }
+    .qfb-role-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--clr-primary-lt); }
+    .qfb-role-icon { 
+      grid-area: icon;
+      font-size: 1.75rem; color: var(--clr-primary); 
+      background: rgba(163, 21, 69, 0.08); 
+      padding: 0.75rem; border-radius: 12px; 
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 0;
+    }
+    .qfb-role-title { grid-area: title; font-weight: 700; color: var(--clr-secondary); font-size: 1.05rem; margin-bottom: 0; align-self: end; }
+    .qfb-role-card p { grid-area: desc; font-size: 0.85rem !important; color: var(--clr-text-muted) !important; margin: 0; line-height: 1.4; }
+    
+    @media (max-width: 992px) {
+      .qfb-role-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .qfb-role-grid { grid-template-columns: 1fr; gap: 1rem; }
+      .qfb-role-card {
+        grid-template-columns: 1fr;
+        grid-template-areas: "icon" "title" "desc";
+        text-align: center; justify-items: center; row-gap: 0.5rem;
+      }
+      .qfb-role-title { align-self: center; margin-bottom: 0.25rem; }
+      .qfb-role-icon { margin-bottom: 0.5rem; }
+    }
+    
     .conclusion-num {
       width:52px; height:52px; border-radius:50%;
       background:linear-gradient(135deg,var(--clr-primary),var(--clr-secondary));
@@ -50,7 +86,7 @@
   <div id="mobile-nav-wrap" class="nav-mobile"><div id="mobile-nav"></div></div>
 </nav>
 
-<header class="page-hero">
+<header class="page-hero" style="background:linear-gradient(135deg, rgba(30,58,95,0.9) 0%, rgba(163,21,69,0.9) 60%, rgba(107,63,160,0.9) 100%), url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat; background-blend-mode: multiply;">
   <div class="page-hero-content container">
     <span class="section-tag" style="background:rgba(255,255,255,.15); color:white;">Sección 6</span>
     <h1>Conclusiones</h1>
@@ -100,7 +136,7 @@
             "La cooperación entre el médico y el QFB promueve el uso racional de los fármacos
             y minimiza los peligros para la madre y el feto."
           </p>
-          <p class="quote-source">— Proyecto Integrador, UPGC · 2do Semestre, Grupo A</p>
+          <p class="quote-source">— Proyecto Integrador, UPGC · 2do Semestre, Grupo A1</p>
         </div>
 
         <div style="background:var(--clr-overlay); border-radius:var(--r-md); padding:1.5rem; margin-top:1.5rem;">
@@ -296,7 +332,7 @@
         <ul class="footer-contact">
           <li><span class="icon"><i data-lucide="map-pin" class="lucide-icon" aria-hidden="true"></i></span><span>Universidad Pablo Guardado Chávez, Tuxtla Gutiérrez, Chiapas, México</span></li>
           <li><span class="icon"><i data-lucide="graduation-cap" class="lucide-icon" aria-hidden="true"></i></span><span>Licenciatura en Químico Farmacobiólogo</span></li>
-          <li><span class="icon"><i data-lucide="user-round" class="lucide-icon" aria-hidden="true"></i></span><span>Asesor: Mtro. Pérez Chávez Rodolfo Carlos</span></li>
+          <li><span class="icon"><i data-lucide="user-round" class="lucide-icon" aria-hidden="true"></i></span><span>Asesores: Mtro. P\u00e9rez Ch\u00e1vez Rodolfo Carlos &amp; Mtro. L\u00f3pez Ventura Daniel</span></li>
           <li><span class="icon"><i data-lucide="calendar-days" class="lucide-icon" aria-hidden="true"></i></span><span>Febrero – Julio 2026</span></li>
         </ul>
       </div>

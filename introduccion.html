@@ -9,7 +9,19 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-
+  <style>
+    .intro-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+    }
+    @media (max-width: 992px) {
+      .intro-cards-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .intro-cards-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
 <div class="scroll-progress" id="scroll-progress"></div>
@@ -117,6 +129,10 @@
               </div>
             </div>
           </div>
+        </div>
+        <!-- Reference Image -->
+        <div style="margin-top: 1.5rem; border-radius: var(--r-md); overflow: hidden; box-shadow: var(--shadow-sm);">
+          <img src="assets/intro_medical.png" alt="Embarazada consultando información médica" style="width: 100%; height: auto; display: block; object-fit: cover; aspect-ratio: 4/3;">
         </div>
       </div>
     </div>
@@ -259,7 +275,7 @@
       <h2 class="section-title">Causas frecuentes de automedicación en gestantes</h2>
     </div>
 
-    <div class="grid-auto stagger-parent">
+    <div class="intro-cards-grid stagger-parent">
       <div class="card stagger-child reveal">
         <div class="card-body">
           <div class="card-icon rose"><i data-lucide="pill" class="lucide-icon" aria-hidden="true"></i></div>
@@ -359,7 +375,7 @@
         <ul class="footer-contact">
           <li><span class="icon"><i data-lucide="map-pin" class="lucide-icon" aria-hidden="true"></i></span><span>Universidad Pablo Guardado Chávez, Tuxtla Gutiérrez, Chiapas, México</span></li>
           <li><span class="icon"><i data-lucide="graduation-cap" class="lucide-icon" aria-hidden="true"></i></span><span>Licenciatura en Químico Farmacobiólogo</span></li>
-          <li><span class="icon"><i data-lucide="user-round" class="lucide-icon" aria-hidden="true"></i></span><span>Asesor: Mtro. Pérez Chávez Rodolfo Carlos</span></li>
+          <li><span class="icon"><i data-lucide="user-round" class="lucide-icon" aria-hidden="true"></i></span><span>Asesores: Mtro. P\u00e9rez Ch\u00e1vez Rodolfo Carlos &amp; Mtro. L\u00f3pez Ventura Daniel</span></li>
           <li><span class="icon"><i data-lucide="calendar-days" class="lucide-icon" aria-hidden="true"></i></span><span>Febrero – Julio 2026</span></li>
         </ul>
       </div>

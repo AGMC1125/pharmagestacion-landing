@@ -11,28 +11,64 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
 
   <style>
-    .team-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1.5rem; margin:2rem 0; }
+    .team-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.5rem; margin:2rem 0; justify-content: center; }
     .advisor-card {
       background:linear-gradient(135deg,#1E3A5F,#2B5797);
       color:white; border-radius:var(--r-md);
-      padding:2rem; text-align:center;
-      box-shadow:var(--shadow-lg); max-width:420px; margin:0 auto 2rem;
+      padding:1.5rem; text-align:center;
+      box-shadow:var(--shadow-lg); width:100%; max-width:320px; margin:0 auto 1.5rem;
+      display: flex; flex-direction: column; align-items: center;
     }
     .advisor-avatar {
-      width:90px; height:90px; border-radius:50%;
+      width:70px; height:70px; border-radius:50%;
       background:rgba(255,255,255,.15);
-      border:3px solid rgba(255,255,255,.4);
+      border:2px solid rgba(255,255,255,.4);
       display:flex; align-items:center; justify-content:center;
-      font-family:var(--font-head); font-size:2rem; font-weight:700;
-      margin:0 auto 1rem;
+      color: white; margin-bottom:1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
-    .advisor-name { font-weight:700; font-size:1.2rem; margin-bottom:.25rem; }
-    .advisor-role { font-size:.9rem; opacity:.8; }
-    .advisor-title { font-size:.8rem; opacity:.6; margin-top:.5rem; }
+    .advisor-name { font-weight:700; font-size:1.05rem; margin-bottom:.25rem; }
+    .advisor-role { font-size:.8rem; opacity:.8; }
+    .advisor-title { font-size:.75rem; opacity:.6; margin-top:.5rem; }
+    
+    .team-card {
+      background: var(--clr-surface); border-radius: var(--r-md); padding: 1.25rem; text-align: center;
+      box-shadow: var(--shadow-sm); border: 1px solid var(--clr-border);
+      transition: transform var(--t-fast), box-shadow var(--t-fast);
+      display: flex; flex-direction: column; align-items: center; width: 100%;
+    }
+    .team-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--clr-primary-lt); }
+    .team-avatar {
+      width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, var(--clr-accent-lt), #EDE9FE);
+      border: 2px solid var(--clr-primary-lt); display: flex; align-items: center; justify-content: center;
+      color: var(--clr-primary); margin-bottom: 0.75rem; box-shadow: 0 4px 8px rgba(163,21,69,0.1);
+    }
+    .team-name { font-weight: 700; font-size: .95rem; color: var(--clr-primary); margin-bottom: 0.25rem; }
+    .team-role { font-size: .75rem; color: var(--clr-text-muted); line-height: 1.4; }
+
     .project-info-box {
-      background:linear-gradient(135deg,var(--clr-accent-lt),#EDE9FE);
-      border-radius:var(--r-md); padding:2rem;
-      border:1px solid var(--clr-border);
+      background:linear-gradient(135deg,rgba(255,255,255,0.8),rgba(255,255,255,0.4));
+      backdrop-filter: blur(10px);
+      border-radius:var(--r-md); padding:1.5rem;
+      border:1px solid rgba(163, 21, 69, 0.15);
+      box-shadow: 0 8px 32px rgba(163, 21, 69, 0.08);
+      position: relative; overflow: hidden;
+    }
+    .project-info-box::before {
+      content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, var(--clr-accent-lt), transparent); pointer-events: none; opacity: 0.3;
+    }
+    .info-item-icon { font-size:1.8rem; margin-bottom:.5rem; color: var(--clr-primary); display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: white; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-inline: auto; }
+    
+    @media (max-width: 768px) {
+      .project-info-box { padding: 1.25rem; }
+      .info-item-icon { width: 40px; height: 40px; font-size: 1.4rem; }
+      .advisor-card { padding: 1.25rem; max-width: 100%; margin-bottom: 1rem; }
+      .advisor-avatar { width: 60px; height: 60px; }
+      .advisor-name { font-size: 1rem; }
+      .team-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; }
+      .team-card { padding: 1rem; }
+      .team-avatar { width: 50px; height: 50px; }
+      .team-name { font-size: 0.85rem; }
+      .team-role { font-size: 0.7rem; }
     }
   </style>
 </head>
@@ -56,7 +92,7 @@
   <div id="mobile-nav-wrap" class="nav-mobile"><div id="mobile-nav"></div></div>
 </nav>
 
-<header class="page-hero" style="background:linear-gradient(135deg,#1E3A5F 0%,#A31545 60%,#6B3FA0 100%);">
+<header class="page-hero" style="background:linear-gradient(135deg, rgba(30,58,95,0.9) 0%, rgba(163,21,69,0.9) 60%, rgba(107,63,160,0.9) 100%), url('https://images.unsplash.com/photo-1576091160550-2173ff9e9e9c?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat; background-blend-mode: multiply;">
   <div class="page-hero-content container">
     <span class="section-tag" style="background:rgba(255,255,255,.15); color:white;">Sección 7</span>
     <h1>Equipo de Trabajo</h1>
@@ -80,44 +116,52 @@
       <span class="section-tag">Quiénes somos</span>
       <h2 class="section-title">Detrás del proyecto</h2>
       <p class="section-subtitle" style="margin:0 auto;">
-        Este proyecto integrador fue realizado por estudiantes del 2do semestre, Grupo A de la
+        Este proyecto integrador fue realizado por estudiantes del 2do semestre, Grupo A1 de la
         Licenciatura en Químico Farmacobiólogo de la Universidad Pablo Guardado Chávez,
-        bajo la asesoría del Mtro. Pérez Chávez Rodolfo Carlos.
+        bajo la asesoría del Mtro. Pérez Chávez Rodolfo Carlos y el Mtro. López Ventura Daniel.
       </p>
     </div>
 
     <!-- Project info -->
-    <div class="project-info-box reveal" style="max-width:700px; margin:0 auto 3rem;">
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; text-align:center;">
+    <div class="project-info-box reveal" style="max-width:800px; margin:0 auto 3rem;">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1.5rem; text-align:center; position: relative; z-index: 1;">
         <div>
-          <div style="font-size:2rem; margin-bottom:.5rem;"><i data-lucide="landmark" class="lucide-icon" aria-hidden="true"></i></div>
-          <div style="font-weight:700; font-size:.9rem;">Universidad</div>
+          <div class="info-item-icon"><i data-lucide="landmark" class="lucide-icon" aria-hidden="true"></i></div>
+          <div style="font-weight:700; font-size:.9rem; color: var(--clr-primary);">Universidad</div>
           <div style="font-size:.8rem; color:var(--clr-text-muted);">Pablo Guardado Chávez</div>
         </div>
         <div>
-          <div style="font-size:2rem; margin-bottom:.5rem;"><i data-lucide="graduation-cap" class="lucide-icon" aria-hidden="true"></i></div>
-          <div style="font-weight:700; font-size:.9rem;">Programa</div>
+          <div class="info-item-icon"><i data-lucide="graduation-cap" class="lucide-icon" aria-hidden="true"></i></div>
+          <div style="font-weight:700; font-size:.9rem; color: var(--clr-primary);">Programa</div>
           <div style="font-size:.8rem; color:var(--clr-text-muted);">Lic. Químico Farmacobiólogo</div>
         </div>
         <div>
-          <div style="font-size:2rem; margin-bottom:.5rem;"><i data-lucide="calendar-days" class="lucide-icon" aria-hidden="true"></i></div>
-          <div style="font-weight:700; font-size:.9rem;">Período</div>
+          <div class="info-item-icon"><i data-lucide="calendar-days" class="lucide-icon" aria-hidden="true"></i></div>
+          <div style="font-weight:700; font-size:.9rem; color: var(--clr-primary);">Período</div>
           <div style="font-size:.8rem; color:var(--clr-text-muted);">Febrero – Julio 2026</div>
         </div>
         <div>
-          <div style="font-size:2rem; margin-bottom:.5rem;"><i data-lucide="library" class="lucide-icon" aria-hidden="true"></i></div>
-          <div style="font-weight:700; font-size:.9rem;">Semestre</div>
-          <div style="font-size:.8rem; color:var(--clr-text-muted);">2do Semestre, Grupo A</div>
+          <div class="info-item-icon"><i data-lucide="users" class="lucide-icon" aria-hidden="true"></i></div>
+          <div style="font-weight:700; font-size:.9rem; color: var(--clr-primary);">Semestre</div>
+          <div style="font-size:.8rem; color:var(--clr-text-muted);">2do Semestre, Grupo A1</div>
         </div>
       </div>
     </div>
 
-    <!-- Advisor -->
-    <div class="advisor-card reveal">
-      <div class="advisor-avatar">PC</div>
-      <div class="advisor-name">Mtro. Pérez Chávez Rodolfo Carlos</div>
-      <div class="advisor-role">Asesor del Proyecto Integrador</div>
-      <div class="advisor-title">Maestro en Ciencias · Universidad Pablo Guardado Chávez</div>
+    <!-- Advisors -->
+    <div style="display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap; max-width:900px; margin:0 auto 2rem;">
+      <div class="advisor-card reveal">
+        <div class="advisor-avatar"><i data-lucide="user" size="36"></i></div>
+        <div class="advisor-name">Mtro. Pérez Chávez Rodolfo Carlos</div>
+        <div class="advisor-role">Asesor del Proyecto Integrador</div>
+        <div class="advisor-title">Maestro en Ciencias &middot; UPGC</div>
+      </div>
+      <div class="advisor-card reveal">
+        <div class="advisor-avatar"><i data-lucide="user" size="36"></i></div>
+        <div class="advisor-name">Mtro. López Ventura Daniel</div>
+        <div class="advisor-role">Asesor del Proyecto Integrador</div>
+        <div class="advisor-title">Maestro &middot; UPGC</div>
+      </div>
     </div>
 
     <!-- Team members (alphabetical order as required by rubric) -->
@@ -127,33 +171,33 @@
     <div class="team-grid stagger-parent">
 
       <div class="team-card stagger-child reveal">
-        <div class="team-avatar">AA</div>
+        <div class="team-avatar"><i data-lucide="user" size="28"></i></div>
         <div class="team-name">Abarca Aguilar Evelyn</div>
-        <div class="team-role">Estudiante · QFB 2do Semestre, Grupo A</div>
+        <div class="team-role">Estudiante · QFB 2do Semestre, Grupo A1</div>
       </div>
 
       <div class="team-card stagger-child reveal">
-        <div class="team-avatar">CB</div>
+        <div class="team-avatar"><i data-lucide="user" size="28"></i></div>
         <div class="team-name">Córdova Bonilla Stephanie Mariely</div>
-        <div class="team-role">Estudiante · QFB 2do Semestre, Grupo A</div>
+        <div class="team-role">Estudiante · QFB 2do Semestre, Grupo A1</div>
       </div>
 
       <div class="team-card stagger-child reveal">
-        <div class="team-avatar">HG</div>
+        <div class="team-avatar"><i data-lucide="user" size="28"></i></div>
         <div class="team-name">Heleria García Zair Alexander</div>
-        <div class="team-role">Estudiante · QFB 2do Semestre, Grupo A</div>
+        <div class="team-role">Estudiante · QFB 2do Semestre, Grupo A1</div>
       </div>
 
       <div class="team-card stagger-child reveal">
-        <div class="team-avatar">HH</div>
+        <div class="team-avatar"><i data-lucide="user" size="28"></i></div>
         <div class="team-name">Hernández Hernández Seani Scaret</div>
-        <div class="team-role">Estudiante · QFB 2do Semestre, Grupo A</div>
+        <div class="team-role">Estudiante · QFB 2do Semestre, Grupo A1</div>
       </div>
 
       <div class="team-card stagger-child reveal">
-        <div class="team-avatar">HL</div>
+        <div class="team-avatar"><i data-lucide="user" size="28"></i></div>
         <div class="team-name">Hernández López Daphne Michelle</div>
-        <div class="team-role">Estudiante · QFB 2do Semestre, Grupo A</div>
+        <div class="team-role">Estudiante · QFB 2do Semestre, Grupo A1</div>
       </div>
 
     </div>
@@ -222,7 +266,7 @@
       <div style="font-size:2rem; margin-bottom:1rem;"><i data-lucide="file-text" class="lucide-icon" aria-hidden="true"></i></div>
       <h3 style="color:var(--clr-primary); margin-bottom:1rem;">Declaración académica</h3>
       <p style="font-size:.9rem;">
-        Este sitio web fue desarrollado como <strong>Proyecto Integrador del 2do Semestre, Grupo A, período
+        Este sitio web fue desarrollado como <strong>Proyecto Integrador del 2do Semestre, Grupo A1, período
         escolar Febrero 2026 – Julio 2026</strong>, de la Licenciatura en Químico Farmacobiólogo
         de la Universidad Pablo Guardado Chávez, Tuxtla Gutiérrez, Chiapas, México.
       </p>
@@ -289,7 +333,7 @@
         <ul class="footer-contact">
           <li><span class="icon"><i data-lucide="map-pin" class="lucide-icon" aria-hidden="true"></i></span><span>Universidad Pablo Guardado Chávez, Tuxtla Gutiérrez, Chiapas, México</span></li>
           <li><span class="icon"><i data-lucide="graduation-cap" class="lucide-icon" aria-hidden="true"></i></span><span>Licenciatura en Químico Farmacobiólogo</span></li>
-          <li><span class="icon"><i data-lucide="user-round" class="lucide-icon" aria-hidden="true"></i></span><span>Asesor: Mtro. Pérez Chávez Rodolfo Carlos</span></li>
+          <li><span class="icon"><i data-lucide="user-round" class="lucide-icon" aria-hidden="true"></i></span><span>Asesores: Mtro. Pérez Chávez Rodolfo Carlos &amp; Mtro. López Ventura Daniel</span></li>
           <li><span class="icon"><i data-lucide="calendar-days" class="lucide-icon" aria-hidden="true"></i></span><span>Febrero – Julio 2026</span></li>
         </ul>
       </div>

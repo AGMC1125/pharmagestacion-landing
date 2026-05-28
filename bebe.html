@@ -12,7 +12,8 @@
   <style>
     /* ── Page-specific overrides ─── */
     .bebe-hero {
-      background: linear-gradient(135deg, #e8f4fd 0%, #fce8f3 50%, #ede9fe 100%);
+      background: linear-gradient(135deg, rgba(232,244,253,0.85) 0%, rgba(252,232,243,0.85) 50%, rgba(237,233,254,0.85) 100%), url('https://images.unsplash.com/photo-1555252113-d48227b134dc?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat;
+      background-blend-mode: overlay;
       padding: var(--space-lg) 0 var(--space-md);
       text-align: center;
     }
@@ -369,16 +370,16 @@
 <!-- ═══════════════════════════════════════════════════════
      HERO
 ═══════════════════════════════════════════════════════ -->
-<section class="bebe-hero">
-  <div class="container">
-    <span class="section-tag">Desarrollo fetal</span>
+<header class="page-hero" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('assets/bebe_fondo.jpg') center/cover no-repeat;">
+  <div class="page-hero-content container">
+    <span class="section-tag" style="background:rgba(255,255,255,.15); color:white;">El Bebé</span>
     <h1>Antes de verte, ¡Conócelo!</h1>
     <p>
       Descubre cómo se forma cada parte del cuerpo de tu bebé semana a semana.
       Selecciona una vista y explora los pequeños milagros del desarrollo fetal.
     </p>
   </div>
-</section>
+</header>
 
 <!-- ═══════════════════════════════════════════════════════
      HUB — Baby figure + mode selector
@@ -388,18 +389,9 @@
 
     <!-- Realistic 3D Baby — Sketchfab Embed (professionally sculpted model) -->
     <div class="baby-figure-wrap" aria-label="Modelo 3D realista de feto en gestación" role="img">
-      <iframe
-        title="Fetus — Modelo 3D interactivo"
-        allowfullscreen
-        mozallowfullscreen="true"
-        webkitallowfullscreen="true"
-        allow="autoplay; fullscreen; xr-spatial-tracking"
-        xr-spatial-tracking
-        execution-while-out-of-viewport
-        execution-while-not-rendered
-        web-share
-        src="https://sketchfab.com/models/cdbadf8ba54e44ec9533a546dcd52830/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_watermark_link=0&ui_watermark=0&ui_stop=0&preload=1">
-      </iframe>
+      <div class="sketchfab-embed-wrapper" style="width: 100%; height: 100%;">
+        <iframe title="Human embryonic - fetal development stages" style="width: 100%; height: 100%;" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/9fb225b983c14b20b67b639e17126f5b/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_watermark_link=0&ui_watermark=0&ui_stop=0&preload=1"> </iframe>
+      </div>
       <div class="baby-3d-label">Vista 3D · Arrastra para rotar · Scroll para zoom</div>
     </div>
 
@@ -663,7 +655,7 @@
           <li>Hernández López Daphne</li>
         </ul>
         <p style="font-size:.75rem; opacity:.5; margin-top:1rem;">
-          Asesor: Mtro. Pérez Chávez Rodolfo Carlos
+          Asesores: Mtro. P\u00e9rez Ch\u00e1vez Rodolfo Carlos &amp; Mtro. L\u00f3pez Ventura Daniel
         </p>
       </div>
     </div>
