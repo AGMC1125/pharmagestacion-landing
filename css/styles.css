@@ -1320,7 +1320,7 @@ section:not(.impact-section) .stat-number span {
 .site-footer .container { position: relative; z-index: 1; }
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 1.2fr 1fr 1fr 1.5fr;
   gap: var(--space-md); margin-bottom: var(--space-md);
 }
 .footer-brand .logo-wrap { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
@@ -1333,7 +1333,7 @@ section:not(.impact-section) .stat-number span {
   border: 2px solid rgba(255,255,255,0.2);
 }
 .footer-brand-name { font-family: var(--font-head); font-size: 1rem; font-weight: 700; line-height: 1.2; }
-.footer-brand p { font-size: 0.875rem; opacity: 0.65; max-width: 280px; }
+.footer-brand p { font-size: 0.875rem; opacity: 0.65; max-width: 320px; }
 .footer-col h4 { font-size: 0.8rem; font-weight: 700; margin-bottom: 1rem; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.1em; }
 .footer-col ul { display: flex; flex-direction: column; gap: 0.5rem; }
 .footer-col ul a { font-size: 0.875rem; opacity: 0.6; transition: opacity var(--t-fast), color var(--t-fast); }
@@ -1461,7 +1461,7 @@ section:not(.impact-section) .stat-number span {
   height: 40px;
   object-fit: contain;
   background: #ffffff;
-  border-radius: 50%;
+  border-radius: 8px;
   padding: 2px;
   box-shadow: 0 4px 16px rgba(163, 21, 69, 0.25);
   flex-shrink: 0;
