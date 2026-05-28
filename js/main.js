@@ -938,14 +938,12 @@
      INIT ALL
   ───────────────────────────────────────────────────────── */
   document.addEventListener('DOMContentLoaded', () => {
-    /* Page fade-in — only on fresh loads, NOT on bfcache restore */
-    if (!window._bfcacheRestore) {
-      document.body.style.opacity = '0';
-      requestAnimationFrame(() => {
-        document.body.style.transition = 'opacity 0.4s ease';
-        document.body.style.opacity    = '1';
-      });
-    }
+    /* Page fade-in */
+    document.body.style.opacity = '0';
+    requestAnimationFrame(() => {
+      document.body.style.transition = 'opacity 0.4s ease';
+      document.body.style.opacity    = '1';
+    });
 
     buildNav();
     initNavScroll();
@@ -980,33 +978,14 @@
   });
 
   /* ─────────────────────────────────────────────────────────
-     BFCACHE FIX — restores page correctly when using the
-     browser Back / Forward buttons (event.persisted = true).
-     Without this, the fade-in opacity:0 freezes the page.
+     BFCACHE FIX — When the browser restores this page from its
+     Back/Forward cache, GSAP elements are frozen at opacity:0.
+     The fix: force a full reload so animations replay correctly.
+     This is the standard approach used by GitHub, YouTube, etc.
   ───────────────────────────────────────────────────────── */
   window.addEventListener('pageshow', (event) => {
     if (event.persisted) {
-      /* Mark so DOMContentLoaded guard knows not to fade-in again */
-      window._bfcacheRestore = true;
-
-      /* 1. Make sure the page is fully visible */
-      document.body.style.transition = 'none';
-      document.body.style.opacity    = '1';
-
-      /* 2. Remove any lingering pre-reveal classes so content shows */
-      document.querySelectorAll('.pre-reveal').forEach(el => {
-        el.classList.remove('pre-reveal');
-        el.classList.add('animated');
-      });
-
-      /* 3. Refresh GSAP ScrollTrigger so pinned/scrubbed elements
-            recalculate positions after the restore */
-      if (typeof ScrollTrigger !== 'undefined') {
-        ScrollTrigger.refresh();
-      }
-
-      /* 4. Re-init Lucide icons in case they weren't rendered */
-      if (window.lucide) lucide.createIcons();
+      window.location.reload();
     }
   });
 
