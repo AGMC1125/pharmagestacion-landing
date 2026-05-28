@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Desarrollo: Farmacocinética en el embarazo, transferencia placentaria, cambios fisiológicos y efectos adversos de los medicamentos en el feto."/>
+  <title>Desarrollo | Desde el Primer Latido – UPGC QFB</title>
+  <link rel="stylesheet" href="css/styles.css"/>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+
+  <style>
+    .adme-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:1rem; margin:2rem 0; }
+    .adme-card {
+      border-radius:var(--r-md); padding:1.5rem;
+      text-align:center; border:1px solid var(--clr-border);
+      background:var(--clr-surface); position:relative; overflow:hidden;
+    }
+    .adme-card::before {
+      content: attr(data-letter);
+      position:absolute; top:-10px; left:10px;
+      font-family:var(--font-head); font-size:5rem; font-weight:900;
+      color:var(--clr-primary); opacity:.06; line-height:1;
+    }
+    .adme-letter {
+      width:52px; height:52px; border-radius:50%;
+      background:linear-gradient(135deg,var(--clr-primary),var(--clr-secondary));
+      color:white; font-weight:900; font-size:1.4rem;
+      display:flex; align-items:center; justify-content:center;
+      margin:0 auto .75rem;
+    }
+    .adme-card h4 { color:var(--clr-primary); margin-bottom:.5rem; }
+    .adme-card p  { font-size:.85rem; color:var(--clr-text-muted); }
+  </style>
+</head>
+<body>
+<div class="scroll-progress" id="scroll-progress"></div>
+
+
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <img src="assets/logo_universidad.png" alt="Escudo UPGC" class="nav-logo-img">
+      <div class="nav-brand-text">
+        <span class="nav-brand-name">Desde el Primer Latido</span>
+        <span class="nav-brand-sub">Proyecto Integrador QFB</span>
+      </div>
+    </a>
+    <div id="main-nav" class="nav-links"></div>
+    <button id="nav-toggle" class="nav-toggle" aria-label="Menú"><span></span><span></span><span></span></button>
+  </div>
+  <div id="mobile-nav-wrap" class="nav-mobile"><div id="mobile-nav"></div></div>
+</nav>
+
+<header class="page-hero">
+  <div class="page-hero-content container">
+    <span class="section-tag" style="background:rgba(255,255,255,.15); color:white;">Sección 2</span>
+    <h1>Desarrollo</h1>
+    <p>Farmacocinética en el embarazo, transferencia placentaria y efectos adversos de la automedicación en el feto.</p>
+  </div>
+</header>
+
+<div style="background:var(--clr-surface); border-bottom:1px solid var(--clr-border); padding:.75rem 0;">
+  <div class="container" style="font-size:.85rem; color:var(--clr-text-muted);">
+    <a href="index.html" style="color:var(--clr-primary);">Inicio</a> &rsaquo;
+    <span style="color:var(--clr-text);">Desarrollo</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     INTRO DESARROLLO
+═══════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="grid-2">
+      <div class="reveal">
+        <span class="section-tag">Contexto farmacológico</span>
+        <h2 class="section-title">La automedicación en el embarazo: más allá de la decisión personal</h2>
+        <p>
+          La automedicación es una práctica ampliamente extendida que responde a múltiples factores:
+          facilidad de acceso a medicamentos, percepción de enfermedades leves, falta de tiempo para
+          acudir a consulta médica e influencia de recomendaciones familiares o sociales.
+        </p>
+        <p>
+          En el caso de las mujeres embarazadas, esta práctica adquiere una dimensión más compleja debido
+          a la presencia de dos organismos interdependientes (la madre y el feto). Los cambios fisiológicos
+          del embarazo pueden modificar la absorción, distribución, metabolismo y excreción de los
+          medicamentos, alterando sus efectos en el organismo materno y fetal (Pinheiro &amp; Stika, 2020).
+        </p>
+        <div class="info-box tip">
+          <span class="info-box-icon">ℹ️</span>
+          <div class="info-box-text">
+            <h4>Dato importante</h4>
+            <p>El embrión es muy sensible a los fármacos. Según el Instituto Nacional Materno Perinatal (2023), el uso inconsciente de medicamentos implica un riesgo mayor durante la gestación.</p>
+          </div>
+        </div>
+      </div>
+      <div class="reveal" style="display:flex; align-items:center; justify-content:center;">
+        <!-- Simple visual: two circles connected -->
+        <svg viewBox="0 0 300 300" width="280" style="filter:drop-shadow(0 8px 20px rgba(163,21,69,.12));">
+          <defs>
+            <radialGradient id="mg1" cx="40%" cy="35%" r="60%">
+              <stop offset="0%" stop-color="#F4AEBE" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#A31545" stop-opacity="0.2"/>
+            </radialGradient>
+            <radialGradient id="mg2" cx="40%" cy="35%" r="60%">
+              <stop offset="0%" stop-color="#C9A8E8" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#6B3FA0" stop-opacity="0.2"/>
+            </radialGradient>
+          </defs>
+          <!-- Mother -->
+          <circle cx="110" cy="110" r="90" fill="url(#mg1)" stroke="var(--clr-primary)" stroke-width="2"/>
+          <text x="110" y="100" text-anchor="middle" fill="var(--clr-primary)" font-weight="700" font-size="14" font-family="Inter,sans-serif">MADRE</text>
+          <text x="110" y="120" text-anchor="middle" fill="var(--clr-text-muted)" font-size="10" font-family="Inter,sans-serif">Circulación</text>
+          <text x="110" y="134" text-anchor="middle" fill="var(--clr-text-muted)" font-size="10" font-family="Inter,sans-serif">farmacocinética</text>
+          <!-- Feto (overlapping) -->
+          <circle cx="200" cy="200" r="80" fill="url(#mg2)" stroke="var(--clr-secondary)" stroke-width="2"/>
+          <text x="200" y="192" text-anchor="middle" fill="var(--clr-secondary)" font-weight="700" font-size="13" font-family="Inter,sans-serif">FETO</text>
+          <text x="200" y="210" text-anchor="middle" fill="var(--clr-text-muted)" font-size="10" font-family="Inter,sans-serif">Metabolismo</text>
+          <text x="200" y="224" text-anchor="middle" fill="var(--clr-text-muted)" font-size="10" font-family="Inter,sans-serif">limitado</text>
+          <!-- Intersection label -->
+          <text x="157" y="165" text-anchor="middle" fill="var(--clr-danger)" font-weight="700" font-size="10" font-family="Inter,sans-serif">Zona</text>
+          <text x="157" y="178" text-anchor="middle" fill="var(--clr-danger)" font-weight="700" font-size="10" font-family="Inter,sans-serif">compartida</text>
+          <!-- Arrow -->
+          <path d="M125,145 Q150,155 165,155" stroke="var(--clr-danger)" stroke-width="2" fill="none" marker-end="url(#ah2)" stroke-dasharray="4 3"/>
+          <defs><marker id="ah2" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="var(--clr-danger)"/></marker></defs>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     ADME
+═══════════════════════════════════════════════════════ -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:var(--space-md);">
+      <span class="section-tag">Farmacocinética</span>
+      <h2 class="section-title">ADME en el embarazo</h2>
+      <p class="section-subtitle" style="margin:0 auto;">
+        Los cuatro procesos farmacocinéticos se modifican significativamente durante la gestación,
+        afectando cómo los medicamentos actúan en la madre y llegan al feto.
+      </p>
+    </div>
+
+    <div class="adme-grid stagger-parent">
+      <div class="adme-card stagger-child reveal" data-letter="A">
+        <div class="adme-letter">A</div>
+        <h4>Absorción</h4>
+        <p>El vaciamiento gástrico se enlentece y el pH estomacal cambia. La absorción oral de fármacos puede retrasarse o reducirse, modificando los niveles plasmáticos máximos.</p>
+      </div>
+      <div class="adme-card stagger-child reveal" data-letter="D">
+        <div class="adme-letter">D</div>
+        <h4>Distribución</h4>
+        <p>El volumen plasmático aumenta ~50% y las proteínas plasmáticas disminuyen. Fármacos que se unen a proteínas tienen mayor fracción libre y activa disponible para cruzar la placenta.</p>
+      </div>
+      <div class="adme-card stagger-child reveal" data-letter="M">
+        <div class="adme-letter">M</div>
+        <h4>Metabolismo</h4>
+        <p>Las enzimas CYP3A4 y CYP2D6 se inducen, mientras otras como CYP1A2 se inhiben. Esto genera variaciones drásticas en la vida media de muchos fármacos (Pinheiro et al., 2020).</p>
+      </div>
+      <div class="adme-card stagger-child reveal" data-letter="E">
+        <div class="adme-letter">E</div>
+        <h4>Excreción</h4>
+        <p>El filtrado glomerular aumenta 50–60%. Medicamentos excretados por vía renal (como levetiracetam) se eliminan más rápido, pudiendo requerir ajustes de dosis de hasta 75%.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     TRANSFERENCIA PLACENTARIA
+═══════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="grid-2">
+      <div class="reveal">
+        <span class="section-tag">Barrera placentaria</span>
+        <h2 class="section-title">¿Cómo cruzan los fármacos la placenta?</h2>
+        <p>
+          La placenta es un órgano transitorio fundamental durante el embarazo cuya función principal
+          es permitir el intercambio de sustancias entre la madre y el feto. Sin embargo, también actúa
+          como un sistema selectivo que regula el paso de compuestos, incluidos los medicamentos.
+        </p>
+        <p>
+          La <strong>transferencia placentaria de fármacos ocurre principalmente mediante difusión pasiva</strong>,
+          favoreciendo el paso de moléculas lipofílicas, no ionizadas y de bajo peso molecular
+          (Mao &amp; Chen, 2022).
+        </p>
+
+        <h3 style="margin:1.5rem 0 1rem; font-size:1.1rem;">Factores que determinan el paso</h3>
+        <div class="accordion">
+          <div class="accordion-item">
+            <button class="accordion-btn">
+              Gradiente de concentración
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-content">
+              <p>El fármaco pasa del lugar de mayor concentración (sangre materna) al de menor (sangre fetal). A mayor dosis materna, mayor transferencia al feto.</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-btn">
+              Unión a proteínas plasmáticas
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-content">
+              <p>Solo la fracción libre del fármaco (no unida a proteínas) puede cruzar la placenta. En el embarazo, la hipoalbuminemia aumenta la fracción libre de muchos medicamentos.</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-btn">
+              Peso molecular y lipofilia
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-content">
+              <p>Moléculas con peso molecular &lt;500 Da y características lipofílicas cruzan fácilmente. La mayoría de los medicamentos de uso común (paracetamol, ibuprofeno, antibióticos) cumplen esta condición.</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-btn">
+              Flujo sanguíneo y grosor placentario
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-content">
+              <p>A mayor flujo sanguíneo materno hacia la placenta, mayor transferencia. El grosor de la membrana placentaria disminuye durante el embarazo, facilitando el paso.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <div class="info-box danger">
+          <span class="info-box-icon"><i data-lucide="siren" class="lucide-icon" aria-hidden="true"></i></span>
+          <div class="info-box-text">
+            <h4>Consecuencias de la exposición fetal</h4>
+            <p>Se estima que entre el <strong>5–10% de las embarazadas</strong> están expuestas a medicamentos potencialmente dañinos. Los efectos adversos incluyen malformaciones congénitas, alteraciones del crecimiento intrauterino, problemas cardiorrespiratorios y trastornos del desarrollo neurológico (Mao &amp; Chen, 2022).</p>
+          </div>
+        </div>
+
+        <div style="margin-top:1.5rem; background:var(--clr-overlay); border-radius:var(--r-md); padding:1.5rem;">
+          <h4 style="color:var(--clr-primary); margin-bottom:1rem;">Ejemplo clínico: Epilepsia durante el embarazo</h4>
+          <p style="font-size:.9rem;">
+            El tratamiento de la epilepsia durante el embarazo representa un reto clínico importante.
+            Las concentraciones séricas del <strong>levetiracetam</strong> disminuyen durante la gestación,
+            lo que ha obligado a incrementar progresivamente la dosis hasta un <strong>75% respecto
+            a la etapa preconcepcional</strong>. Tras el parto, los niveles se recuperaron rápidamente,
+            por lo que fue necesario reducir la dosis (~24%) para prevenir toxicidad
+            (Fallik et al., 2024).
+          </p>
+          <p style="font-size:.9rem; margin-top:.75rem;">
+            Este caso ilustra por qué <strong>ningún tratamiento farmacológico debe mantenerse sin
+            monitorización farmacéutica profesional</strong> durante el embarazo.
+          </p>
+        </div>
+
+        <div class="info-box success" style="margin-top:1rem;">
+          <span class="info-box-icon"><i data-lucide="check-circle-2" class="lucide-icon" aria-hidden="true"></i></span>
+          <div class="info-box-text">
+            <h4>No siempre hay que suspender medicamentos</h4>
+            <p>Condiciones como diabetes, hipertensión, epilepsia o trastornos del estado de ánimo requieren control médico continuo. Dejar el tratamiento puede ser más riesgoso que continuarlo bajo supervisión especializada.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     MALFORMACIONES CONGÉNITAS
+═══════════════════════════════════════════════════════ -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:var(--space-md);">
+      <span class="section-tag">Impacto global</span>
+      <h2 class="section-title">Malformaciones congénitas: una realidad prevenible</h2>
+    </div>
+    <div class="grid-2">
+      <div class="reveal">
+        <p>
+          En los países desarrollados, las malformaciones congénitas son la
+          <strong>primera causa de mortalidad infantil</strong>. La Organización Mundial de la Salud estima
+          que cada año <strong>276,000 recién nacidos fallecen</strong> durante las primeras cuatro semanas
+          de vida debido a anomalías congénitas (García Arcia et al., 2023).
+        </p>
+        <p>
+          En América Latina y el Caribe, las malformaciones congénitas representan el
+          <strong>21% de la mortalidad infantil</strong> en menores de cinco años. Aunque las causas son
+          multifactoriales, la exposición a fármacos teratogénicos durante el primer trimestre
+          es uno de los factores prevenibles más importantes.
+        </p>
+        <div class="quote-block">
+          <p class="quote-text">
+            "El uso de cualquier medicamento implica cierto riesgo de daño fetal, especialmente durante las etapas críticas del desarrollo."
+          </p>
+          <p class="quote-source">— García Arcia et al., 2023</p>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <div class="stats-grid" style="grid-template-columns:1fr 1fr;">
+          <div class="stat-card">
+            <div class="stat-number"><span data-count="276000">0</span></div>
+            <div class="stat-label">Recién nacidos que fallecen anualmente por anomalías congénitas (OMS)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number"><span data-count="21" data-suffix="%">0</span></div>
+            <div class="stat-label">De mortalidad infantil en Am. Latina corresponde a malformaciones</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number"><span data-count="5" data-suffix="–10%">0</span></div>
+            <div class="stat-label">Embarazadas expuestas a fármacos potencialmente dañinos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number"><span data-count="0.7" data-suffix="%">0</span></div>
+            <div class="stat-label">Iniciaron medicamentos de alto riesgo durante el embarazo (Álvarez et al., 2025)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     ALCOHOL Y TABACO
+═══════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <span class="section-tag">Sustancias adicionales</span>
+    <h2 class="section-title" style="margin-bottom:1rem;">Alcohol y tabaco: riesgos subestimados</h2>
+    <p style="max-width:700px; margin-bottom:2rem;">
+      Más allá de los medicamentos, el consumo de alcohol y tabaco durante el embarazo constituye
+      un importante problema de salud pública. Estas sustancias se asocian con alteraciones del
+      crecimiento intrauterino, parto prematuro, bajo peso al nacer y complicaciones neonatales
+      (Míguez &amp; Pereira, 2021).
+    </p>
+
+    <div class="grid-2 stagger-parent">
+      <div class="card stagger-child reveal" style="border-top:4px solid var(--clr-danger);">
+        <div class="card-body">
+          <div style="font-size:2.5rem; margin-bottom:1rem;"><i data-lucide="beer" class="lucide-icon" aria-hidden="true"></i></div>
+          <h3 style="color:var(--clr-danger); margin-bottom:.75rem;">Alcohol</h3>
+          <ul style="font-size:.9rem; padding-left:1.25rem; color:var(--clr-text-muted); list-style:disc;">
+            <li style="margin-bottom:.5rem;">Síndrome alcohólico fetal (SAF): la causa prevenible más común de discapacidad intelectual</li>
+            <li style="margin-bottom:.5rem;">Malformaciones faciales, cardíacas y del sistema nervioso central</li>
+            <li style="margin-bottom:.5rem;">Bajo peso al nacer y retraso del crecimiento intrauterino</li>
+            <li>No existe un nivel seguro de consumo durante el embarazo</li>
+          </ul>
+          <div class="risk-badge danger" style="margin-top:1rem;"><i data-lucide="ban" class="lucide-icon" aria-hidden="true"></i> Contraindicado en todo el embarazo</div>
+        </div>
+      </div>
+
+      <div class="card stagger-child reveal" style="border-top:4px solid var(--clr-caution);">
+        <div class="card-body">
+          <div style="font-size:2.5rem; margin-bottom:1rem;"><i data-lucide="cigarette" class="lucide-icon" aria-hidden="true"></i></div>
+          <h3 style="color:var(--clr-caution); margin-bottom:.75rem;">Tabaco</h3>
+          <ul style="font-size:.9rem; padding-left:1.25rem; color:var(--clr-text-muted); list-style:disc;">
+            <li style="margin-bottom:.5rem;">Restricción del crecimiento intrauterino por vasoconstricción placentaria</li>
+            <li style="margin-bottom:.5rem;">Mayor riesgo de aborto espontáneo y parto prematuro</li>
+            <li style="margin-bottom:.5rem;">Bajo peso al nacer (&lt;2,500 g)</li>
+            <li>Riesgo aumentado de muerte súbita del lactante (SMSL)</li>
+          </ul>
+          <div class="risk-badge danger" style="margin-top:1rem;"><i data-lucide="ban" class="lucide-icon" aria-hidden="true"></i> Contraindicado en todo el embarazo</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════════════════════ -->
+<section class="section section-alt">
+  <div class="container text-center">
+    <h3 style="color:var(--clr-primary); margin-bottom:1rem;">Continúa explorando el proyecto</h3>
+    <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+      <a href="introduccion.html" class="btn btn-outline">&#8592; Introducción</a>
+      <a href="medicamentos.html" class="btn btn-primary">Medicamentos de riesgo &#8594;</a>
+      <a href="plantas.html" class="btn btn-outline">Plantas medicinales &#8594;</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo-wrap">
+          <img src="assets/logo_universidad.png" alt="Escudo UPGC" class="footer-logo-img">
+          <div>
+            <div class="footer-brand-name">Universidad Pablo Guardado Chávez</div>
+            <div style="font-size:.75rem; opacity:.6; margin-top:.2rem;">Lic. Químico Farmacobiólogo</div>
+          </div>
+        </div>
+        <p>Proyecto integrador: <em>"Desde el Primer Latido"</em>. 2do Semestre, Febrero–Julio 2026.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Secciones</h4>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="introduccion.html">Introducción</a></li>
+          <li><a href="desarrollo.html">Desarrollo</a></li>
+          <li><a href="bebe.html">El Bebé</a></li>
+          <li><a href="medicamentos.html">Medicamentos</a></li>
+          <li><a href="plantas.html">Plantas medicinales</a></li>
+          <li><a href="factores.html">Factores y tecnología</a></li>
+          <li><a href="conclusiones.html">Conclusiones</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Más info</h4>
+        <ul>
+          <li><a href="equipo.html">Equipo de trabajo</a></li>
+          <li><a href="referencias.html">Referencias</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <ul class="footer-contact">
+          <li><span class="icon"><i data-lucide="map-pin" class="lucide-icon" aria-hidden="true"></i></span><span>Universidad Pablo Guardado Chávez, Tuxtla Gutiérrez, Chiapas, México</span></li>
+          <li><span class="icon"><i data-lucide="graduation-cap" class="lucide-icon" aria-hidden="true"></i></span><span>Licenciatura en Químico Farmacobiólogo</span></li>
+          <li><span class="icon"><i data-lucide="user-round" class="lucide-icon" aria-hidden="true"></i></span><span>Asesor: Mtro. Pérez Chávez Rodolfo Carlos</span></li>
+          <li><span class="icon"><i data-lucide="calendar-days" class="lucide-icon" aria-hidden="true"></i></span><span>Febrero – Julio 2026</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Universidad Pablo Guardado Chávez · Proyecto Integrador QFB</span>
+      <span>Fuentes académicas verificadas e indexadas.</span>
+    </div>
+  </div>
+</footer>
+
+<button id="back-to-top" aria-label="Volver arriba">&#8679;</button>
+<script src="js/main.js"></script>
+
+<script>document.addEventListener("DOMContentLoaded", function(){ if(window.lucide) lucide.createIcons(); });</script>
+</body>
+</html>

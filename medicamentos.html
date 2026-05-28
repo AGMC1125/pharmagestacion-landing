@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Medicamentos durante el embarazo: perfil de riesgo de paracetamol, AINEs, antibióticos, antiepilépticos y otros fármacos comunes."/>
+  <title>Medicamentos | Desde el Primer Latido – UPGC QFB</title>
+  <link rel="stylesheet" href="css/styles.css"/>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+
+  <style>
+    .med-filter-bar { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:2rem; }
+    .filter-btn {
+      padding:.45rem 1.1rem; border-radius:100px;
+      border:2px solid var(--clr-border); background:var(--clr-surface);
+      font-weight:600; font-size:.85rem; cursor:pointer;
+      transition:all var(--t-fast); color:var(--clr-text-muted);
+    }
+    .filter-btn:hover { border-color:var(--clr-primary); color:var(--clr-primary); }
+    .filter-btn.active { background:var(--clr-primary); border-color:var(--clr-primary); color:white; }
+    .filter-btn.safe    { border-color:var(--clr-safe);    color:var(--clr-safe); }
+    .filter-btn.caution { border-color:var(--clr-caution); color:var(--clr-caution); }
+    .filter-btn.danger  { border-color:var(--clr-danger);  color:var(--clr-danger); }
+    .filter-btn.safe.active    { background:var(--clr-safe);    border-color:var(--clr-safe); color:white; }
+    .filter-btn.caution.active { background:var(--clr-caution); border-color:var(--clr-caution); color:white; }
+    .filter-btn.danger.active  { background:var(--clr-danger);  border-color:var(--clr-danger); color:white; }
+
+    .med-card {
+      background:var(--clr-surface); border-radius:var(--r-md);
+      border:1px solid var(--clr-border); overflow:hidden;
+      box-shadow:var(--shadow-sm); transition:all var(--t-fast);
+    }
+    .med-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-md); }
+    .med-card-head {
+      padding:1.25rem 1.5rem;
+      display:flex; align-items:center; gap:1rem;
+      border-bottom:1px solid var(--clr-border);
+    }
+    .med-icon { font-size:1.75rem; }
+    .med-name { font-weight:700; font-size:1.05rem; margin-bottom:.25rem; }
+    .med-category { font-size:.75rem; color:var(--clr-text-muted); font-weight:500; }
+    .med-card-body { padding:1.25rem 1.5rem; }
+    .med-card-body p { font-size:.875rem; margin-bottom:.75rem; }
+    .med-risks { margin-top:.75rem; }
+    .med-risks h5 { font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:.5rem; color:var(--clr-text-muted); }
+    .med-risk-tags { display:flex; flex-wrap:wrap; gap:.35rem; }
+    .med-risk-tag {
+      font-size:.75rem; padding:.2rem .7rem; border-radius:100px;
+      background:var(--clr-danger-bg); color:var(--clr-danger); font-weight:600;
+    }
+    .med-risk-tag.caution { background:var(--clr-caution-bg); color:var(--clr-caution); }
+    .med-risk-tag.safe    { background:var(--clr-safe-bg);    color:var(--clr-safe); }
+
+    .med-card[data-risk="danger"] .med-card-head { border-left:4px solid var(--clr-danger); }
+    .med-card[data-risk="caution"] .med-card-head { border-left:4px solid var(--clr-caution); }
+    .med-card[data-risk="safe"] .med-card-head { border-left:4px solid var(--clr-safe); }
+    .med-card.hidden { display:none; }
+  </style>
+</head>
+<body>
+<div class="scroll-progress" id="scroll-progress"></div>
+
+
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <img src="assets/logo_universidad.png" alt="Escudo UPGC" class="nav-logo-img">
+      <div class="nav-brand-text">
+        <span class="nav-brand-name">Desde el Primer Latido</span>
+        <span class="nav-brand-sub">Proyecto Integrador QFB</span>
+      </div>
+    </a>
+    <div id="main-nav" class="nav-links"></div>
+    <button id="nav-toggle" class="nav-toggle" aria-label="Menú"><span></span><span></span><span></span></button>
+  </div>
+  <div id="mobile-nav-wrap" class="nav-mobile"><div id="mobile-nav"></div></div>
+</nav>
+
+<header class="page-hero">
+  <div class="page-hero-content container">
+    <span class="section-tag" style="background:rgba(255,255,255,.15); color:white;">Sección 3</span>
+    <h1>Medicamentos en el Embarazo</h1>
+    <p>Perfil de riesgo de los fármacos más utilizados sin supervisión médica durante la gestación.</p>
+  </div>
+</header>
+
+<div style="background:var(--clr-surface); border-bottom:1px solid var(--clr-border); padding:.75rem 0;">
+  <div class="container" style="font-size:.85rem; color:var(--clr-text-muted);">
+    <a href="index.html" style="color:var(--clr-primary);">Inicio</a> &rsaquo;
+    <span style="color:var(--clr-text);">Medicamentos</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     INTRO + LEYENDA
+═══════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="grid-2" style="margin-bottom:var(--space-md);">
+      <div class="reveal">
+        <span class="section-tag">Perfil de riesgo</span>
+        <h2 class="section-title">Medicamentos frecuentes en la automedicación gestacional</h2>
+        <p>
+          Diversos estudios han identificado que existe un grupo de medicamentos utilizados con mayor
+          frecuencia por mujeres gestantes sin supervisión médica, principalmente debido a su
+          fácil acceso, bajo costo y percepción de seguridad.
+        </p>
+        <p>
+          El consumo de medicamentos durante el embarazo está liderado por
+          <strong>analgésicos no opioides como paracetamol</strong>, seguido de antiinflamatorios,
+          antibióticos y fármacos gastrointestinales (Álvarez et al., 2025).
+        </p>
+      </div>
+      <div class="reveal">
+        <h4 style="margin-bottom:1rem; color:var(--clr-primary);">Niveles de riesgo utilizados</h4>
+        <div style="display:flex; flex-direction:column; gap:.75rem;">
+          <div style="display:flex; align-items:center; gap:1rem; padding:1rem; background:var(--clr-safe-bg); border-radius:var(--r-sm); border-left:4px solid var(--clr-safe);">
+            <span class="risk-badge safe"><i data-lucide="check" class="lucide-icon" aria-hidden="true"></i> Relativo</span>
+            <span style="font-size:.875rem;">Uso posiblemente seguro en dosis recomendadas con supervisión médica.</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:1rem; padding:1rem; background:var(--clr-caution-bg); border-radius:var(--r-sm); border-left:4px solid var(--clr-caution);">
+            <span class="risk-badge caution"><i data-lucide="zap" class="lucide-icon" aria-hidden="true"></i> Precaución</span>
+            <span style="font-size:.875rem;">Uso solo bajo prescripción médica en circunstancias específicas.</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:1rem; padding:1rem; background:var(--clr-danger-bg); border-radius:var(--r-sm); border-left:4px solid var(--clr-danger);">
+            <span class="risk-badge danger"><i data-lucide="ban" class="lucide-icon" aria-hidden="true"></i> Contraindicado</span>
+            <span style="font-size:.875rem;">Teratogénico o con efectos adversos graves demostrados. Evitar en lo posible.</span>
+          </div>
+        </div>
+        <p style="font-size:.75rem; color:var(--clr-text-muted); margin-top:1rem;">
+          <i data-lucide="alert-triangle" class="lucide-icon" aria-hidden="true"></i> Esta información es educativa. Nunca tome ni suspenda medicamentos sin consultar a un médico.
+        </p>
+      </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="med-filter-bar">
+      <button class="filter-btn active" data-filter="all">Todos</button>
+      <button class="filter-btn safe" data-filter="safe">Relativo</button>
+      <button class="filter-btn caution" data-filter="caution">Precaución</button>
+      <button class="filter-btn danger" data-filter="danger">Contraindicados</button>
+    </div>
+
+    <!-- Medication cards grid -->
+    <div class="grid-auto" id="med-grid">
+
+      <!-- Paracetamol -->
+      <div class="med-card reveal" data-risk="safe">
+        <div class="med-card-head">
+          <div class="med-icon"><i data-lucide="pill" class="lucide-icon" aria-hidden="true"></i></div>
+          <div>
+            <div class="med-name">Paracetamol (Acetaminofén)</div>
+            <div class="med-category">Analgésico / Antipirético</div>
+          </div>
+          <span class="risk-badge safe" style="margin-left:auto;">Relativo</span>
+        </div>
+        <div class="med-card-body">
+          <p>Ampliamente considerado como el analgésico más seguro durante el embarazo cuando se utiliza en dosis adecuadas. Indicado para dolor de cabeza, fiebre y malestares generales frecuentes durante la gestación.</p>
+          <p><strong>Riesgo:</strong> Su uso indiscriminado representa un riesgo potencial si no se respeta la dosificación (máx. 3 g/día) o la frecuencia recomendada. Algunos estudios asocian el uso prolongado con efectos neuroconductuales en el feto.</p>
+          <div class="med-risks">
+            <h5>Precauciones</h5>
+            <div class="med-risk-tags">
+              <span class="med-risk-tag safe">Dosis recomendada: seguro</span>
+              <span class="med-risk-tag caution">Evitar uso prolongado</span>
+              <span class="med-risk-tag caution">No exceder 3 g/día</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ibuprofeno/AINEs -->
+      <div class="med-card reveal" data-risk="danger">
+        <div class="med-card-head">
+          <div class="med-icon"><i data-lucide="circle" class="lucide-icon" aria-hidden="true"></i></div>
+          <div>
+            <div class="med-name">Ibuprofeno / AINEs</div>
+            <div class="med-category">Antiinflamatorio no esteroideo</div>
+          </div>
+          <span class="risk-badge danger" style="margin-left:auto;"><i data-lucide="ban" class="lucide-icon" aria-hidden="true"></i> Contraindicado</span>
+        </div>
+        <div class="med-card-body">
+          <p>Aunque son de uso común en la población general para aliviar dolor e inflamación, su consumo durante el embarazo puede implicar riesgos importantes, especialmente en el tercer trimestre.</p>
+          <p><strong>3er trimestre:</strong> Se asocian al cierre prematuro del ductus arterioso, oligohidramnios (reducción del líquido amniótico) y alteraciones en la función renal fetal (Pereira et al., 2021).</p>
+          <div class="med-risks">
+            <h5>Efectos adversos</h5>
+            <div class="med-risk-tags">
+              <span class="med-risk-tag">Cierre ductus arterioso</span>
+              <span class="med-risk-tag">Oligohidramnios</span>
+              <span class="med-risk-tag">Daño renal fetal</span>
+              <span class="med-risk-tag caution">1er trim: uso con precaución</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Antibióticos -->
+      <div class="med-card reveal" data-risk="caution">
+        <div class="med-card-head">
+          <div class="med-icon"><i data-lucide="virus" class="lucide-icon" aria-hidden="true"></i></div>
+          <div>
+            <div class="med-name">Antibióticos</div>
+            <div class="med-category">Antimicrobianos (varios grupos)</div>
+          </div>
+          <span class="risk-badge caution" style="margin-left:auto;"><i data-lucide="zap" class="lucide-icon" aria-hidden="true"></i> Precaución</span>
+        </div>
+        <div class="med-card-body">
+          <p>Forman parte de los medicamentos frecuentemente usados sin supervisión, contribuyendo al problema global de la resistencia bacteriana. La seguridad varía ampliamente según el grupo.</p>
+          <p><strong>Seguros bajo prescripción:</strong> Amoxicilina, ampicilina, cefalosporinas, eritromicina.<br/>
+          <strong>Contraindicados:</strong> Tetraciclinas (daño dental y óseo fetal), fluoroquinolonas, metronidazol (1er trim), aminoglucósidos (ototoxicidad fetal) (COFEPRIS, 2024).</p>
+          <div class="med-risks">
+            <h5>Precauciones clave</h5>
+            <div class="med-risk-tags">
+              <span class="med-risk-tag">Tetraciclinas: contraindicadas</span>
+              <span class="med-risk-tag">Fluoroquinolonas: evitar</span>
+              <span class="med-risk-tag caution">Solo bajo prescripción</span>
+              <span class="med-risk-tag">Riesgo de resistencia bacteriana</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Talidomida -->
+      <div class="med-card reveal" data-risk="danger">
+        <div class="med-card-head">
+          <div class="med-icon"><i data-lucide="ban" class="lucide-icon" aria-hidden="true"></i></div>
+          <div>
+            <div class="med-name">Talidomida</div>
+            <div class="med-category">Inmunomodulador / histórico</div>
+          </div>
+          <span class="risk-badge danger" style="margin-left:auto;"><i data-lucide="ban" class="lucide-icon" aria-hidden="true"></i> Absolutamente contraindicado</span>
+        </div>
+        <div class="med-card-body">
+          <p>El caso histórico más conocido de teratogenicidad farmacológica. En los años 1950–60 causó el nacimiento de miles de bebés con focomelia (ausencia/malformación de extremidades) y otras anomalías graves.</p>
+          <p>Actualmente su uso está estrictamente controlado para condiciones específicas (lepra, mieloma), y está <strong>absolutamente contraindicado en el embarazo</strong>.</p>
+          <div class="med-risks">
+            <h5>Efectos teratogénicos</h5>
+            <div class="med-risk-tags">
+              <span class="med-risk-tag">Focomelia</span>
+              <span class="med-risk-tag">Malformaciones cardíacas</span>
+              <span class="med-risk-tag">Defectos del tubo neural</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Retinoides -->
+      <div class="med-card reveal" data-risk="danger">
+        <div class="med-card-head">
+          <div class="med-icon"><i data-lucide="alert-triangle" class="lucide-icon" aria-hidden="true"></i></div>
+          <div>
+            <div class="med-name">Retinoides orales</div>
+            <div class="med-category">Isotretinoína, acitretina (antiacné/psoriasis)</div>
+          </div>
+          <span class="risk-badge danger" style="margin-left:auto;"><i data-lucide="ban" class="lucide-icon" aria-hidden="true"></i> Absolutamente contraindicado</span>
+        </div>
+        <div class="med-card-body">
+          <p>Los retinoides son análogos de la vitamina A ampliamente utilizados para el acné severo (isotretinoína) y psoriasis (acitretina). Son potentemente teratogénicos incluso en dosis bajas.</p>
+          <p>Se requiere prueba de embarazo negativa antes de iniciar y durante el tratamiento, con doble método anticonceptivo. La isotretinoína tiene un programa especial de control de distribución (iPLEDGE).</p>
+          <div class="med-risks">
+            <h5>Efectos teratogénicos</h5>
+            <div class="med-risk-tags">
+              <span class="med-risk-tag">Malformaciones craneofaciales</span>
+              <span class="med-risk-tag">Defectos cardíacos</span>
+              <span class="med-risk-tag">Microcefalia</span>
+              <span class="med-risk-tag">Aborto espontáneo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Valproato -->
+      <div class="med-card reveal" data-risk="danger">
+        <div class="med-card-head">
+          <div class="med-icon"><i data-lucide="brain" class="lucide-icon" aria-hidden="true"></i></div>
+          <div>
+            <div class="med-name">Valproato (Ácido valproico)</div>
+            <div class="med-category">Antiepiléptico / Estabilizador del ánimo</div>
+          </div>
+          <span class="risk-badge danger" style="margin-left:auto;"><i data-lucide="ban" class="lucide-icon" aria-hidden="true"></i> Alto riesgo</span>
+        </div>
+        <div class="med-card-body">
+          <p>Utilizado para epilepsia y trastorno bipolar. Es uno de los antiepilépticos con mayor potencial teratogénico. Sin embargo, no siempre puede suspenderse si es el único tratamiento efectivo para la paciente.</p>
+          <p>Se asocia con <strong>espina bífida, malformaciones cardíacas, retraso del desarrollo cognitivo y síndrome fetal por valproato</strong>. Requiere evaluación riesgo-beneficio obligatoria con especialista.</p>
+          <div class="med-risks">
+            <h5>Efectos adversos</h5>
+            <div class="med-risk-tags">
+              <span class="med-risk-tag">Espina bífida</span>
+              <span class="med-risk-tag">Malformaciones cardíacas</span>
+              <span class="med-risk-tag">Déficit cognitivo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fenitoína -->
+      <div class="med-card reveal" data-risk="danger">
+        <div class="med-card-head">
+          <div class="med-icon"><i data-lucide="zap" class="lucide-icon" aria-hidden="true"></i></div>
+          <div>
+            <div class="med-name">Fenitoína</div>
+            <div class="med-category">Antiepiléptico</div>
+          </div>
+          <span class="risk-badge danger" style="margin-left:auto;"><i data-lucide="ban" class="lucide-icon" aria-hidden="true"></i> Alto riesgo</span>
+        </div>
+        <div class="med-card-body">
+          <p>Antiepiléptico clásico con potencial teratogénico bien establecido. El "síndrome hidantoína fetal" incluye malformaciones craneofaciales características, hipoplasia digital y retraso del crecimiento.</p>
+          <p>En los casos donde es imprescindible, requiere monitorización farmacéutica estricta y suplementación con ácido fólico.</p>
+          <div class="med-risks">
+            <h5>Síndrome hidantoína fetal</h5>
+            <div class="med-risk-tags">
+              <span class="med-risk-tag">Anomalías faciales</span>
+              <span class="med-risk-tag">Hipoplasia digital</span>
+              <span class="med-risk-tag">Déficit del crecimiento</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carbonato de Litio -->
+      <div class="med-card reveal" data-risk="danger">
+        <div class="med-card-head">
+          <div class="med-icon"><i data-lucide="circle" class="lucide-icon" aria-hidden="true"></i></div>
+          <div>
+            <div class="med-name">Carbonato de litio</div>
+            <div class="med-category">Estabilizador del ánimo (trastorno bipolar)</div>
+          </div>
+          <span class="risk-badge danger" style="margin-left:auto;"><i data-lucide="ban" class="lucide-icon" aria-hidden="true"></i> Alto riesgo</span>
+        </div>
+        <div class="med-card-body">
+          <p>Esencial para el control del trastorno bipolar. Se asocia con la anomalía de Ebstein (malformación cardiovascular). Sin embargo, el riesgo no suspenderlo puede ser mayor que el riesgo de mantenerlo bajo vigilancia.</p>
+          <p>Requiere ecocardiograma fetal, monitorización de niveles séricos y ajuste de dosis continuo durante la gestación y el postparto.</p>
+          <div class="med-risks">
+            <h5>Efectos adversos</h5>
+            <div class="med-risk-tags">
+              <span class="med-risk-tag">Anomalía de Ebstein</span>
+              <span class="med-risk-tag">Diabetes insípida neonatal</span>
+              <span class="med-risk-tag caution">Monitorización obligatoria</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Benzodiacepinas -->
+      <div class="med-card reveal" data-risk="caution">
+        <div class="med-card-head">
+          <div class="med-icon"><i data-lucide="moon" class="lucide-icon" aria-hidden="true"></i></div>
+          <div>
+            <div class="med-name">Benzodiacepinas</div>
+            <div class="med-category">Ansiolíticos / Sedantes</div>
+          </div>
+          <span class="risk-badge caution" style="margin-left:auto;"><i data-lucide="zap" class="lucide-icon" aria-hidden="true"></i> Precaución</span>
+        </div>
+        <div class="med-card-body">
+          <p>Utilizadas para ansiedad, insomnio y convulsiones. El uso en el primer trimestre se ha asociado con malformaciones del paladar. En el tercer trimestre pueden causar síndrome neonatal de abstinencia.</p>
+          <p>El neonato expuesto puede presentar hipotonía, dificultades respiratorias y síndrome de "bebé flácido" si se usan cerca del parto.</p>
+          <div class="med-risks">
+            <h5>Precauciones</h5>
+            <div class="med-risk-tags">
+              <span class="med-risk-tag caution">1er trim: posible labio leporino</span>
+              <span class="med-risk-tag">3er trim: síndrome neonatal</span>
+              <span class="med-risk-tag">Hipotonía neonatal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Antiácidos -->
+      <div class="med-card reveal" data-risk="caution">
+        <div class="med-card-head">
+          <div class="med-icon"><i data-lucide="loader-2" class="lucide-icon" aria-hidden="true"></i></div>
+          <div>
+            <div class="med-name">Antiácidos / Antieméticos</div>
+            <div class="med-category">Fármacos gastrointestinales</div>
+          </div>
+          <span class="risk-badge caution" style="margin-left:auto;"><i data-lucide="zap" class="lucide-icon" aria-hidden="true"></i> Precaución</span>
+        </div>
+        <div class="med-card-body">
+          <p>Ampliamente usados para náuseas, vómitos, acidez y estreñimiento frecuentes en el embarazo, especialmente durante el primer y segundo trimestre. Muchas mujeres los consumen sin prescripción.</p>
+          <p>Aunque generalmente se consideran seguros, el uso inadecuado o excesivo puede interferir con la absorción de nutrientes esenciales para el desarrollo fetal (González-Juárez et al., 2022).</p>
+          <div class="med-risks">
+            <h5>Consideraciones</h5>
+            <div class="med-risk-tags">
+              <span class="med-risk-tag safe">Doxilamina: segura</span>
+              <span class="med-risk-tag caution">Metoclopramida: uso breve</span>
+              <span class="med-risk-tag caution">Evitar uso prolongado</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /#med-grid -->
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     TABLE: RESUMEN
+═══════════════════════════════════════════════════════ -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:2rem;">
+      <span class="section-tag">Resumen clínico</span>
+      <h2 class="section-title">Tabla de referencia rápida</h2>
+    </div>
+    <div style="overflow-x:auto;" class="reveal">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Medicamento</th>
+            <th>Categoría</th>
+            <th>1er trimestre</th>
+            <th>2do trimestre</th>
+            <th>3er trimestre</th>
+            <th>Alternativa</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Paracetamol</strong></td>
+            <td>Analgésico</td>
+            <td><span class="risk-badge safe" style="font-size:.7rem;">Permitido</span></td>
+            <td><span class="risk-badge safe" style="font-size:.7rem;">Permitido</span></td>
+            <td><span class="risk-badge safe" style="font-size:.7rem;">Permitido</span></td>
+            <td>Dosis mínima efectiva</td>
+          </tr>
+          <tr>
+            <td><strong>Ibuprofeno</strong></td>
+            <td>AINE</td>
+            <td><span class="risk-badge caution" style="font-size:.7rem;">Con precaución</span></td>
+            <td><span class="risk-badge caution" style="font-size:.7rem;">Con precaución</span></td>
+            <td><span class="risk-badge danger" style="font-size:.7rem;">Contraindicado</span></td>
+            <td>Paracetamol</td>
+          </tr>
+          <tr>
+            <td><strong>Amoxicilina</strong></td>
+            <td>Antibiótico</td>
+            <td><span class="risk-badge safe" style="font-size:.7rem;">Con prescripción</span></td>
+            <td><span class="risk-badge safe" style="font-size:.7rem;">Con prescripción</span></td>
+            <td><span class="risk-badge safe" style="font-size:.7rem;">Con prescripción</span></td>
+            <td>Solo bajo prescripción</td>
+          </tr>
+          <tr>
+            <td><strong>Tetraciclinas</strong></td>
+            <td>Antibiótico</td>
+            <td><span class="risk-badge danger" style="font-size:.7rem;">Contraindicado</span></td>
+            <td><span class="risk-badge danger" style="font-size:.7rem;">Contraindicado</span></td>
+            <td><span class="risk-badge danger" style="font-size:.7rem;">Contraindicado</span></td>
+            <td>Amoxicilina, cefalosporinas</td>
+          </tr>
+          <tr>
+            <td><strong>Valproato</strong></td>
+            <td>Antiepiléptico</td>
+            <td><span class="risk-badge danger" style="font-size:.7rem;">Alto riesgo</span></td>
+            <td><span class="risk-badge danger" style="font-size:.7rem;">Alto riesgo</span></td>
+            <td><span class="risk-badge danger" style="font-size:.7rem;">Alto riesgo</span></td>
+            <td>Lamotrigina (con supervisión)</td>
+          </tr>
+          <tr>
+            <td><strong>Isotretinoína</strong></td>
+            <td>Retinoide</td>
+            <td><span class="risk-badge danger" style="font-size:.7rem;">Abs. contraindicado</span></td>
+            <td><span class="risk-badge danger" style="font-size:.7rem;">Abs. contraindicado</span></td>
+            <td><span class="risk-badge danger" style="font-size:.7rem;">Abs. contraindicado</span></td>
+            <td>Evitar durante y 1 mes antes</td>
+          </tr>
+          <tr>
+            <td><strong>Benzodiacepinas</strong></td>
+            <td>Ansiolítico</td>
+            <td><span class="risk-badge danger" style="font-size:.7rem;">Evitar</span></td>
+            <td><span class="risk-badge caution" style="font-size:.7rem;">Con supervisión</span></td>
+            <td><span class="risk-badge danger" style="font-size:.7rem;">Evitar</span></td>
+            <td>TCC, técnicas no farmacológicas</td>
+          </tr>
+          <tr>
+            <td><strong>Talidomida</strong></td>
+            <td>Inmunomodulador</td>
+            <td><span class="risk-badge danger" style="font-size:.7rem;">Abs. contraindicado</span></td>
+            <td><span class="risk-badge danger" style="font-size:.7rem;">Abs. contraindicado</span></td>
+            <td><span class="risk-badge danger" style="font-size:.7rem;">Abs. contraindicado</span></td>
+            <td>No existe alternativa equivalente</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:.75rem; color:var(--clr-text-muted); margin-top:1rem; text-align:center;">
+      Fuentes: Álvarez et al., 2025; Mao &amp; Chen, 2022; Pereira et al., 2021; COFEPRIS, 2024; Mayo Clinic, 2025.
+      Esta tabla es informativa — consulte siempre con un profesional de salud.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     CTA
+═══════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container text-center">
+    <h3 style="color:var(--clr-primary); margin-bottom:1rem;">¿Y las plantas medicinales?</h3>
+    <p style="max-width:600px; margin:0 auto 2rem;">Muchas mujeres recurren a remedios naturales creyendo que son completamente seguros durante el embarazo. La evidencia científica dice otra cosa.</p>
+    <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+      <a href="plantas.html" class="btn btn-primary">Ver plantas medicinales &#8594;</a>
+      <a href="factores.html" class="btn btn-outline">Factores de riesgo social</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo-wrap">
+          <img src="assets/logo_universidad.png" alt="Escudo UPGC" class="footer-logo-img">
+          <div>
+            <div class="footer-brand-name">Universidad Pablo Guardado Chávez</div>
+            <div style="font-size:.75rem; opacity:.6; margin-top:.2rem;">Lic. Químico Farmacobiólogo</div>
+          </div>
+        </div>
+        <p>Proyecto integrador: <em>"Desde el Primer Latido"</em>. 2do Semestre, Febrero–Julio 2026.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Secciones</h4>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="introduccion.html">Introducción</a></li>
+          <li><a href="desarrollo.html">Desarrollo</a></li>
+          <li><a href="bebe.html">El Bebé</a></li>
+          <li><a href="medicamentos.html">Medicamentos</a></li>
+          <li><a href="plantas.html">Plantas medicinales</a></li>
+          <li><a href="factores.html">Factores y tecnología</a></li>
+          <li><a href="conclusiones.html">Conclusiones</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Más info</h4>
+        <ul>
+          <li><a href="equipo.html">Equipo de trabajo</a></li>
+          <li><a href="referencias.html">Referencias</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <ul class="footer-contact">
+          <li><span class="icon"><i data-lucide="map-pin" class="lucide-icon" aria-hidden="true"></i></span><span>Universidad Pablo Guardado Chávez, Tuxtla Gutiérrez, Chiapas, México</span></li>
+          <li><span class="icon"><i data-lucide="graduation-cap" class="lucide-icon" aria-hidden="true"></i></span><span>Licenciatura en Químico Farmacobiólogo</span></li>
+          <li><span class="icon"><i data-lucide="user-round" class="lucide-icon" aria-hidden="true"></i></span><span>Asesor: Mtro. Pérez Chávez Rodolfo Carlos</span></li>
+          <li><span class="icon"><i data-lucide="calendar-days" class="lucide-icon" aria-hidden="true"></i></span><span>Febrero – Julio 2026</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Universidad Pablo Guardado Chávez · Proyecto Integrador QFB</span>
+      <span>Esta información es educativa y no sustituye la consulta médica.</span>
+    </div>
+  </div>
+</footer>
+
+<button id="back-to-top" aria-label="Volver arriba">&#8679;</button>
+<script src="js/main.js"></script>
+<script>
+  /* Filter functionality */
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      document.querySelectorAll('.med-card').forEach(card => {
+        if (filter === 'all' || card.dataset.risk === filter) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    });
+  });
+</script>
+
+<script>document.addEventListener("DOMContentLoaded", function(){ if(window.lucide) lucide.createIcons(); });</script>
+</body>
+</html>
