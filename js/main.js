@@ -226,7 +226,7 @@
 
     /* ── Cards hover tilt (3D) ──────────────────────────── */
     if (window.matchMedia('(hover: hover)').matches) {
-      document.querySelectorAll('.card, .qa-card, .flip-card').forEach(card => {
+      document.querySelectorAll('.card:not(.ref-list), .qa-card, .flip-card').forEach(card => {
         card.addEventListener('mousemove', e => {
           const r = card.getBoundingClientRect();
           const x = ((e.clientX - r.left) / r.width  - 0.5) * 14;
