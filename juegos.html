@@ -300,6 +300,7 @@
       backface-visibility: hidden; -webkit-backface-visibility: hidden;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       padding: .5rem; text-align: center;
+      overflow: hidden;   /* evita que el contenido se salga */
     }
 
     /* Front (back of card) */
@@ -458,12 +459,41 @@
       .quiz-question-img-placeholder { height: 120px; }
       .quiz-options { gap: .5rem; }
       .quiz-opt { font-size: .85rem; padding: .85rem .5rem; }
-      .memo-grid { grid-template-columns: repeat(4, 1fr); gap: .5rem; }
+      /* Tablet: 3 columnas → cartas ~160px de ancho */
+      .memo-grid { grid-template-columns: repeat(3, 1fr); gap: .6rem; }
     }
-    @media (max-width: 500px) {
-      .memo-grid { grid-template-columns: repeat(4, 1fr); gap: .4rem; }
-      .memo-emoji { font-size: 1.1rem; }
-      .memo-card-label { font-size: .62rem; }
+    @media (max-width: 520px) {
+      /* Móvil: 2 columnas → cartas ~175px de ancho, espacio suficiente */
+      .memo-grid { grid-template-columns: repeat(2, 1fr); gap: .5rem; }
+      .memo-face.back.type-nombre { padding: .45rem .4rem .5rem; }
+      .memo-face.back.type-efecto { padding: .5rem .45rem; }
+
+      /* Badges: sin desborde */
+      .memo-badge {
+        font-size: .52rem; padding: .15rem .45rem; gap: .2rem;
+        white-space: nowrap; max-width: 100%; overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .memo-badge-dot { width: 4px; height: 4px; }
+
+      /* Imagen de la planta/medicamento */
+      .memo-card-img { margin: .1rem 0; }
+
+      /* Nombre de la planta */
+      .memo-card-label {
+        font-size: .62rem; letter-spacing: .01em;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        width: 100%;
+      }
+
+      /* Texto del efecto — limitar a 5 líneas */
+      .memo-effect-text {
+        font-size: .67rem; line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 6;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
     }
   </style>
 </head>
