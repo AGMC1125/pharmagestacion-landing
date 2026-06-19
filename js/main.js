@@ -18,6 +18,7 @@
     { href: 'conclusiones.html',  label: 'Conclusiones' },
     { href: 'equipo.html',        label: 'Equipo' },
     { href: 'referencias.html',   label: 'Referencias' },
+    { href: 'juegos.html',        label: '🎮 Juegos' },
   ];
 
   const CURRENT = location.pathname.split('/').pop() || 'index.html';

@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Juegos interactivos: Quiz farmacéutico y Memorama de medicamentos y plantas. Desde el Primer Latido – QFB UPGC."/>
+  <title>Juegos Interactivos | Desde el Primer Latido – QFB</title>
+  <link rel="stylesheet" href="css/styles.css"/>
+  <link rel="icon" type="image/png" href="assets/logo_universidad.png"/>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+
+  <style>
+    /* ═══════════════════════════════════════════════
+       GAMES PAGE – Shared
+    ═══════════════════════════════════════════════ */
+    .games-hero {
+      background: linear-gradient(135deg, #2D0B1F 0%, #6B3FA0 60%, #A31545 100%);
+      color: white;
+      padding: 5rem 0 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .games-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(163,21,69,.35), transparent 60%),
+                  radial-gradient(ellipse at 80% 30%, rgba(107,63,160,.4), transparent 60%);
+      pointer-events: none;
+    }
+    .games-hero h1 { color: white; font-size: 2.8rem; margin-bottom: .75rem; position: relative; }
+    .games-hero p  { color: rgba(255,255,255,.8); font-size: 1.1rem; max-width: 600px; margin: 0 auto; position: relative; }
+    .games-nav-pills {
+      display: flex; justify-content: center; gap: 1rem; margin-top: 2rem;
+      flex-wrap: wrap; position: relative;
+    }
+    .games-nav-pill {
+      padding: .6rem 1.5rem; border-radius: 100px;
+      background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3);
+      color: white; font-weight: 700; font-size: .9rem; cursor: pointer;
+      transition: all var(--t-fast); text-decoration: none;
+    }
+    .games-nav-pill:hover,
+    .games-nav-pill.active { background: white; color: var(--clr-primary); }
+
+    /* ═══════════════════════════════════════════════
+       QUIZ – Layout
+    ═══════════════════════════════════════════════ */
+    #quiz-section { padding: var(--space-lg) 0; }
+
+    .quiz-wrapper {
+      max-width: 820px; margin: 0 auto;
+      background: white; border-radius: var(--r-lg);
+      box-shadow: var(--shadow-lg); overflow: hidden;
+    }
+
+    /* ── Quiz Header (progress + timer) ── */
+    .quiz-header {
+      background: linear-gradient(135deg, #2D0B1F, #A31545);
+      padding: 1rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .quiz-progress-label { color: rgba(255,255,255,.8); font-size: .8rem; font-weight: 700; white-space: nowrap; }
+    .quiz-progress-bar-wrap {
+      flex: 1; height: 8px; background: rgba(255,255,255,.2); border-radius: 100px; overflow: hidden;
+    }
+    .quiz-progress-bar {
+      height: 100%; background: #4ADE80; border-radius: 100px;
+      transition: width .4s ease;
+    }
+    .quiz-timer {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: rgba(255,255,255,.1); border: 3px solid rgba(255,255,255,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; font-weight: 900; color: white;
+      position: relative; flex-shrink: 0;
+    }
+    .quiz-timer-ring {
+      position: absolute; inset: -3px;
+      border-radius: 50%;
+      background: conic-gradient(#F06292 var(--pct, 100%), transparent 0);
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), black 0);
+      mask: radial-gradient(farthest-side, transparent calc(100% - 4px), black 0);
+    }
+    .quiz-timer.danger { border-color: #EF4444; }
+    .quiz-timer.danger .quiz-timer-ring { background: conic-gradient(#EF4444 var(--pct, 100%), transparent 0); }
+
+    /* ── Question area ── */
+    .quiz-question-area { padding: 1.5rem; }
+    .quiz-question-img {
+      width: 100%; border-radius: var(--r-md); margin-bottom: 1.25rem;
+      overflow: hidden; background: #FAFAFA;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .quiz-question-img img {
+      width: 100%; height: auto; display: block;
+      max-height: 340px; object-fit: contain;
+      border-radius: var(--r-md);
+    }
+    .quiz-question-img-placeholder {
+      width: 100%; height: 160px;
+      border-radius: var(--r-md); margin-bottom: 1.25rem;
+      background: linear-gradient(135deg, #F0D9E3, #EDE9FE);
+      border: 2px dashed rgba(163,21,69,.3);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .5rem;
+    }
+    .quiz-question-img-placeholder span:last-child { font-size: .75rem; color: var(--clr-text-muted); font-weight: 600; }
+
+    .quiz-question-text {
+      font-family: var(--font-head); font-size: 1.3rem; font-weight: 800;
+      color: var(--clr-text); text-align: center; line-height: 1.3;
+      margin-bottom: 1.5rem; padding: 0 .5rem;
+    }
+
+    /* ── Options grid ── */
+    .quiz-options {
+      display: grid; grid-template-columns: 1fr 1fr; gap: .75rem;
+    }
+    .quiz-options.two-col { grid-template-columns: 1fr 1fr; }
+
+    .quiz-opt {
+      padding: 1.1rem .75rem;
+      border-radius: var(--r-md); border: none; cursor: pointer;
+      font-family: var(--font-head); font-size: 1rem; font-weight: 700;
+      color: white; line-height: 1.25; text-align: center;
+      transition: transform var(--t-fast), filter var(--t-fast), box-shadow var(--t-fast);
+      position: relative; overflow: hidden;
+    }
+    .quiz-opt:hover:not(:disabled) {
+      transform: translateY(-2px) scale(1.02);
+      filter: brightness(1.08);
+      box-shadow: 0 8px 20px rgba(0,0,0,.15);
+    }
+    .quiz-opt:disabled { cursor: not-allowed; }
+
+    /* Option colors */
+    .quiz-opt[data-idx="0"] { background: #E8114F; }
+    .quiz-opt[data-idx="1"] { background: #1565C0; }
+    .quiz-opt[data-idx="2"] { background: #E67E00; }
+    .quiz-opt[data-idx="3"] { background: #2E7D32; }
+
+    /* True/False special */
+    .quiz-opt.tf-true  { background: #1565C0; }
+    .quiz-opt.tf-false { background: #C62828; }
+
+    /* Feedback states */
+    .quiz-opt.correct   { background: #16A34A !important; box-shadow: 0 0 0 4px #4ADE80, 0 8px 24px rgba(22,163,74,.3) !important; }
+    .quiz-opt.incorrect { background: #DC2626 !important; opacity: .65; }
+    .quiz-opt.reveal    { background: #16A34A !important; box-shadow: 0 0 0 4px #4ADE80 !important; }
+
+    /* ── Quiz footer ── */
+    .quiz-footer {
+      padding: 1rem 1.5rem;
+      background: #FAFAFA; border-top: 1px solid var(--clr-border);
+      display: flex; align-items: center; justify-content: space-between;
+      min-height: 64px;
+    }
+    .quiz-feedback-msg {
+      font-weight: 700; font-size: .9rem;
+      display: flex; align-items: center; gap: .5rem; flex: 1;
+    }
+    .quiz-feedback-msg svg { flex-shrink: 0; }
+    .quiz-feedback-msg.correct { color: #16A34A; }
+    .quiz-feedback-msg.incorrect { color: #DC2626; }
+    .quiz-feedback-msg.timeout  { color: #D97706; }
+    /* next btn removed – timer auto-advances */
+
+    /* ── Start Screen ── */
+    #quiz-start-screen {
+      padding: 3rem 2rem; text-align: center;
+    }
+    .quiz-start-icon {
+      width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 1.5rem;
+      background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary));
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 24px rgba(163,21,69,.3);
+    }
+    #quiz-start-screen h2 { font-size: 1.8rem; margin-bottom: .75rem; }
+    #quiz-start-screen p  { color: var(--clr-text-muted); max-width: 420px; margin: 0 auto 2rem; }
+    .quiz-rules {
+      background: var(--clr-overlay); border-radius: var(--r-md);
+      padding: 1.25rem; margin-bottom: 2rem; text-align: left;
+      display: flex; flex-direction: column; gap: .6rem;
+    }
+    .quiz-rule-item {
+      display: flex; align-items: center; gap: .75rem;
+      font-size: .9rem; font-weight: 600; color: var(--clr-text);
+    }
+    .quiz-rule-dot {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--clr-primary), var(--clr-accent));
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 800; color: white;
+    }
+    .btn-start-quiz {
+      padding: .9rem 2.5rem; border-radius: 100px; border: none;
+      background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary));
+      color: white; font-family: var(--font-head); font-weight: 800; font-size: 1.1rem;
+      cursor: pointer; transition: all var(--t-fast);
+      box-shadow: 0 6px 20px rgba(163,21,69,.35);
+    }
+    .btn-start-quiz:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(163,21,69,.45); }
+
+    /* ── Results Screen ── */
+    #quiz-results-screen { display: none; padding: 2rem 1.5rem; }
+    .results-hero {
+      text-align: center; margin-bottom: 2rem;
+      padding: 2rem; border-radius: var(--r-lg);
+      background: linear-gradient(135deg, #2D0B1F, #A31545); color: white;
+    }
+    .results-score-ring {
+      width: 120px; height: 120px; border-radius: 50%;
+      border: 6px solid rgba(255,255,255,.3); margin: 0 auto 1rem;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(255,255,255,.1);
+    }
+    .results-score-num { font-size: 2.5rem; font-weight: 900; line-height: 1; }
+    .results-score-den { font-size: .85rem; opacity: .7; }
+    .results-hero h2   { color: white; font-size: 1.5rem; margin-bottom: .25rem; }
+    .results-hero p    { color: rgba(255,255,255,.75); font-size: .9rem; }
+
+    .results-list { display: flex; flex-direction: column; gap: .75rem; margin-bottom: 2rem; }
+    .result-item {
+      border-radius: var(--r-md); overflow: hidden;
+      border: 1px solid var(--clr-border);
+    }
+    .result-item-header {
+      padding: .75rem 1rem; display: flex; align-items: flex-start; gap: .75rem;
+      background: #FAFAFA;
+    }
+    .result-status-icon {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .result-status-icon.ok   { background: #DCFCE7; color: #16A34A; }
+    .result-status-icon.fail { background: #FEE2E2; color: #DC2626; }
+    .result-status-icon.skip { background: #FEF3C7; color: #D97706; }
+    .result-answer.correct-ans { display: flex; align-items: center; gap: .35rem; }
+    .result-item-q { font-weight: 700; font-size: .9rem; flex: 1; }
+    .result-item-body { padding: .5rem 1rem .75rem; display: flex; flex-direction: column; gap: .3rem; }
+    .result-answer {
+      font-size: .82rem; display: flex; align-items: center; gap: .4rem;
+    }
+    .result-answer.user-wrong { color: #DC2626; }
+    .result-answer.correct-ans { color: #16A34A; font-weight: 700; }
+    .result-answer.user-correct { color: #16A34A; }
+
+    .results-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-restart {
+      padding: .8rem 2rem; border-radius: 100px; border: none;
+      background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary));
+      color: white; font-family: var(--font-head); font-weight: 800; font-size: 1rem;
+      cursor: pointer; transition: all var(--t-fast);
+      box-shadow: 0 6px 20px rgba(163,21,69,.3);
+    }
+    .btn-restart:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(163,21,69,.4); }
+
+    /* ═══════════════════════════════════════════════
+       MEMORAMA – Layout
+    ═══════════════════════════════════════════════ */
+    #memorama-section { padding: var(--space-lg) 0; background: var(--clr-overlay); }
+
+    .memo-header { text-align: center; margin-bottom: var(--space-md); }
+    .memo-stats {
+      display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    .memo-stat {
+      background: white; border-radius: var(--r-md); padding: .6rem 1.2rem;
+      font-weight: 700; font-size: .9rem; box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; gap: .5rem; color: var(--clr-text);
+    }
+    .memo-stat span { color: var(--clr-primary); font-size: 1.1rem; }
+
+    .memo-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: .75rem;
+      max-width: 900px; margin: 0 auto;
+    }
+
+    /* ── Memo Card ── */
+    .memo-card {
+      aspect-ratio: 3/4; cursor: pointer;
+      perspective: 800px;
+    }
+    .memo-card-inner {
+      width: 100%; height: 100%; position: relative;
+      transform-style: preserve-3d;
+      transition: transform .5s cubic-bezier(.4,0,.2,1);
+      border-radius: var(--r-md);
+    }
+    .memo-card.flipped .memo-card-inner  { transform: rotateY(180deg); }
+    .memo-card.matched .memo-card-inner  { transform: rotateY(180deg); }
+
+    .memo-face {
+      position: absolute; inset: 0; border-radius: var(--r-md);
+      backface-visibility: hidden; -webkit-backface-visibility: hidden;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: .5rem; text-align: center;
+    }
+
+    /* Front (back of card) */
+    .memo-face.front {
+      background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary));
+      box-shadow: 0 4px 12px rgba(163,21,69,.25);
+    }
+    .memo-card-logo {
+      width: 36px; height: 36px; opacity: .9;
+    }
+    .memo-card-pattern {
+      position: absolute; inset: 0; border-radius: var(--r-md); overflow: hidden;
+      background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.04) 0, rgba(255,255,255,.04) 1px, transparent 0, transparent 50%);
+      background-size: 10px 10px;
+    }
+
+    /* Back (content side) */
+    .memo-face.back {
+      transform: rotateY(180deg);
+      border: 2px solid var(--clr-border);
+      box-shadow: 0 4px 16px rgba(0,0,0,.08);
+      flex-direction: column; gap: .3rem;
+    }
+    /* ── Name card (planta / medicamento) ── */
+    .memo-face.back.type-nombre {
+      background: #EAE4F7; border-color: rgba(107,63,160,.2);
+      justify-content: flex-start; padding: .4rem .4rem .5rem;
+      gap: 0;
+    }
+    /* ── Effect card ── */
+    .memo-face.back.type-efecto {
+      background: #E0F4F6; border-color: rgba(45,130,150,.2);
+      padding: .6rem .5rem; justify-content: center;
+    }
+
+    /* Badge on name cards */
+    .memo-badge {
+      font-size: .5rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+      padding: .18rem .55rem; border-radius: 100px; margin-bottom: .3rem;
+      display: inline-flex; align-items: center; gap: .25rem; align-self: flex-start;
+      flex-shrink: 0;
+    }
+    .memo-badge.danger  { background: #FECDD3; color: #BE123C; }
+    .memo-badge.caution { background: #FEF3C7; color: #B45309; }
+    .memo-badge-dot {
+      width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0;
+    }
+    .danger .memo-badge-dot  { background: #BE123C; }
+    .caution .memo-badge-dot { background: #B45309; }
+
+    /* Plant / med image inside name card */
+    .memo-card-img {
+      width: 100%; flex: 1; object-fit: contain;
+      min-height: 0; margin: .15rem 0;
+    }
+    .memo-card-label {
+      font-family: var(--font-head); font-weight: 800;
+      font-size: .6rem; line-height: 1.15; color: #3B2C6E;
+      text-align: center; text-transform: uppercase; letter-spacing: .03em;
+      margin-top: .1rem; flex-shrink: 0;
+    }
+
+    /* Effect text */
+    .memo-effect-text {
+      font-size: .65rem; line-height: 1.35; color: #1e4a5c;
+      text-align: center; font-weight: 500;
+    }
+
+    /* Matched state – green tint */
+    .memo-card.matched .memo-face.back {
+      background: #DCFCE7 !important;
+      border-color: #16A34A !important;
+    }
+    .memo-card.matched .memo-card-label { color: #166534 !important; }
+    .memo-card.matched .memo-effect-text { color: #166534 !important; }
+
+    /* Shake for wrong match */
+    .memo-card.shake {
+      animation: memo-shake .4s ease;
+    }
+    @keyframes memo-shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-6px); }
+      40%      { transform: translateX(6px); }
+      60%      { transform: translateX(-4px); }
+      80%      { transform: translateX(4px); }
+    }
+
+    /* Memorama Start screen */
+    .memo-start-screen {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; gap: 1.1rem; padding: 3.5rem 1.5rem;
+    }
+    .memo-start-icon {
+      width: 78px; height: 78px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--clr-secondary), var(--clr-primary));
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 24px rgba(163,21,69,.3);
+    }
+    .memo-start-icon svg { color: #fff; }
+    .memo-start-screen h3 {
+      font-family: var(--font-head); font-size: 1.6rem;
+      color: var(--clr-text); margin: 0;
+    }
+    .memo-start-screen p {
+      color: var(--clr-text-muted); max-width: 460px; margin: 0;
+      font-size: .97rem; line-height: 1.55;
+    }
+    .memo-start-screen .memo-chips {
+      display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center;
+    }
+    .memo-chip {
+      padding: .3rem .8rem; border-radius: 100px; font-size: .78rem;
+      font-weight: 700; background: #EAE4F7; color: var(--clr-secondary);
+    }
+    .memo-start-btn {
+      margin-top: .5rem; padding: .85rem 2.4rem; border-radius: 100px;
+      border: none; cursor: pointer;
+      background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary));
+      color: #fff; font-family: var(--font-head); font-weight: 800;
+      font-size: 1rem; letter-spacing: .01em;
+      display: inline-flex; align-items: center; gap: .5rem;
+      box-shadow: 0 6px 18px rgba(163,21,69,.35);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .memo-start-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(163,21,69,.4); }
+
+    /* preview flash — all cards show front for 2s */
+    .memo-card.preview { pointer-events: none; }
+
+    /* Memorama Win overlay */
+    .memo-win {
+      display: none; text-align: center; padding: 2.5rem 1.5rem;
+      background: white; border-radius: var(--r-lg);
+      box-shadow: var(--shadow-lg); margin-top: 2rem;
+      max-width: 500px; margin-left: auto; margin-right: auto;
+    }
+    .memo-win.visible { display: block; animation: fadeInUp .5s ease; }
+    @keyframes fadeInUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    .memo-win-trophy { font-size: 4rem; margin-bottom: 1rem; }
+    .memo-win h3 { font-size: 1.8rem; color: var(--clr-primary); margin-bottom: .5rem; }
+    .memo-win p  { color: var(--clr-text-muted); margin-bottom: 1.5rem; }
+    .btn-memo-restart {
+      padding: .8rem 2rem; border-radius: 100px; border: none;
+      background: linear-gradient(135deg, var(--clr-secondary), var(--clr-primary));
+      color: white; font-family: var(--font-head); font-weight: 800;
+      cursor: pointer; transition: all var(--t-fast);
+    }
+    .btn-memo-restart:hover { transform: translateY(-2px); }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .games-hero h1  { font-size: 1.9rem; }
+      .quiz-question-text { font-size: 1.1rem; }
+      .quiz-question-img img { max-height: 220px; }
+      .quiz-question-img-placeholder { height: 120px; }
+      .quiz-options { gap: .5rem; }
+      .quiz-opt { font-size: .85rem; padding: .85rem .5rem; }
+      .memo-grid { grid-template-columns: repeat(4, 1fr); gap: .5rem; }
+    }
+    @media (max-width: 500px) {
+      .memo-grid { grid-template-columns: repeat(4, 1fr); gap: .4rem; }
+      .memo-emoji { font-size: 1.1rem; }
+      .memo-card-label { font-size: .62rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="scroll-progress" id="scroll-progress"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════════════════ -->
+<header class="page-header">
+  <nav class="site-nav" aria-label="Navegación principal">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand" aria-label="Inicio">
+        <div style="display:flex;gap:.5rem;align-items:center;margin-right:.25rem;">
+          <img src="assets/logo_universidad.png" alt="Escudo UPGC" class="nav-logo-img" style="border-radius:50%;">
+          <img src="assets/QFB_logo.jpg" alt="Logo QFB" class="nav-logo-img">
+        </div>
+        <div class="nav-brand-text">
+          <span class="nav-brand-name">Desde el Primer Latido</span>
+          <span class="nav-brand-sub">Proyecto Integrador QFB</span>
+        </div>
+      </a>
+      <div id="main-nav" class="nav-links"></div>
+      <button id="nav-toggle" class="nav-toggle" aria-label="Menú" aria-expanded="false" aria-controls="mobile-nav-wrap">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div id="mobile-nav-wrap" class="nav-mobile" role="menu" aria-hidden="true">
+      <div id="mobile-nav"></div>
+    </div>
+  </nav>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════════ -->
+<section class="games-hero" aria-label="Juegos interactivos">
+  <div class="container">
+    <span class="section-tag" style="background:rgba(255,255,255,.15);color:white;margin-bottom:1rem;display:inline-block;">Aprende jugando</span>
+    <h1>Juegos Interactivos</h1>
+    <p>Pon a prueba tu conocimiento sobre farmacología en el embarazo de manera divertida y educativa.</p>
+    <nav class="games-nav-pills" aria-label="Ir a juego">
+      <a href="#quiz-section" class="games-nav-pill">Quiz Kahoot</a>
+      <a href="#memorama-section" class="games-nav-pill">Memorama</a>
+    </nav>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     JUEGO 1: QUIZ TIPO KAHOOT
+═══════════════════════════════════════════════════════ -->
+<section id="quiz-section" aria-labelledby="quiz-heading">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:var(--space-md);">
+      <span class="section-tag">Juego 1</span>
+      <h2 class="section-title" id="quiz-heading">Quiz Farmacéutico</h2>
+      <p class="section-subtitle">15 preguntas · 20 segundos por pregunta · Retroalimentación al final</p>
+    </div>
+
+    <div class="quiz-wrapper">
+
+      <!-- START SCREEN -->
+      <div id="quiz-start-screen">
+        <div class="quiz-start-icon">
+          <i data-lucide="zap" style="width:36px;height:36px;color:white;" aria-hidden="true"></i>
+        </div>
+        <h2>¿Listo para el quiz?</h2>
+        <p>Responde 15 preguntas sobre riesgos farmacéuticos en el embarazo. ¡Tienes 20 segundos por pregunta!</p>
+        <div class="quiz-rules">
+          <div class="quiz-rule-item"><div class="quiz-rule-dot">1</div>Lee cada pregunta con atención.</div>
+          <div class="quiz-rule-item"><div class="quiz-rule-dot">2</div>Selecciona la respuesta antes de que el tiempo se agote.</div>
+          <div class="quiz-rule-item"><div class="quiz-rule-dot">3</div>Al finalizar verás tu puntaje y la retroalimentación completa.</div>
+          <div class="quiz-rule-item"><div class="quiz-rule-dot">4</div>Puedes reiniciar el quiz cuantas veces quieras.</div>
+        </div>
+        <button class="btn-start-quiz" id="btn-start-quiz">
+          ¡Comenzar! &#8594;
+        </button>
+      </div>
+
+      <!-- QUESTION SCREEN (hidden initially) -->
+      <div id="quiz-question-screen" style="display:none;">
+        <div class="quiz-header">
+          <div class="quiz-progress-label" id="quiz-q-label">Pregunta 1 / 15</div>
+          <div class="quiz-progress-bar-wrap">
+            <div class="quiz-progress-bar" id="quiz-progress-bar" style="width:0%"></div>
+          </div>
+          <div class="quiz-timer" id="quiz-timer">
+            <div class="quiz-timer-ring" id="quiz-timer-ring"></div>
+            <span id="quiz-timer-num">20</span>
+          </div>
+        </div>
+
+        <div class="quiz-question-area">
+          <!-- Image placeholder / real image -->
+          <div id="quiz-img-wrap"></div>
+          <!-- Question text -->
+          <div class="quiz-question-text" id="quiz-question-text"></div>
+          <!-- Options -->
+          <div class="quiz-options" id="quiz-options"></div>
+        </div>
+
+        <div class="quiz-footer">
+          <div class="quiz-feedback-msg" id="quiz-feedback"></div>
+          <div id="quiz-advance-hint" style="font-size:.78rem;color:var(--clr-text-muted);font-weight:600;display:none;">Avanzando...</div>
+        </div>
+      </div>
+
+      <!-- RESULTS SCREEN (hidden initially) -->
+      <div id="quiz-results-screen">
+        <div class="results-hero">
+          <div class="results-score-ring">
+            <div class="results-score-num" id="results-num">0</div>
+            <div class="results-score-den" id="results-den">/ 15</div>
+          </div>
+          <h2 id="results-title">¡Quiz completado!</h2>
+          <p id="results-subtitle"></p>
+        </div>
+
+        <h3 style="font-size:1.05rem;margin-bottom:.75rem;color:var(--clr-text);">Retroalimentación pregunta por pregunta</h3>
+        <div class="results-list" id="results-list"></div>
+
+        <div class="results-actions">
+          <button class="btn-restart" id="btn-restart-quiz">
+            Reintentar Quiz &#8635;
+          </button>
+          <a href="#memorama-section" class="btn btn-outline">Jugar Memorama &#8594;</a>
+        </div>
+      </div>
+
+    </div><!-- /.quiz-wrapper -->
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     JUEGO 2: MEMORAMA
+═══════════════════════════════════════════════════════ -->
+<section id="memorama-section" aria-labelledby="memo-heading">
+  <div class="container">
+    <div class="memo-header">
+      <span class="section-tag">Juego 2</span>
+      <h2 class="section-title" id="memo-heading">Memorama: Medicamentos y Plantas</h2>
+      <p class="section-subtitle" style="margin:0 auto;">Encuentra los 10 pares: cada medicamento o planta con su efecto durante el embarazo.</p>
+    </div>
+
+    <!-- ── Start screen ── -->
+    <div id="memo-start" class="memo-start-screen">
+      <div class="memo-start-icon">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="3" width="9" height="12" rx="2"/><rect x="13" y="3" width="9" height="12" rx="2"/>
+          <rect x="2" y="17" width="9" height="4" rx="1"/><rect x="13" y="17" width="9" height="4" rx="1"/>
+        </svg>
+      </div>
+      <h3>Memorama</h3>
+      <p>Se mostrarán todas las cartas por <strong>2 segundos</strong>. ¡Memoriza y encuentra los 10 pares!</p>
+      <div class="memo-chips">
+        <span class="memo-chip">10 pares</span>
+        <span class="memo-chip">20 cartas</span>
+        <span class="memo-chip">Plantas &amp; Medicamentos</span>
+      </div>
+      <button class="memo-start-btn" id="btn-memo-start">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Iniciar Juego
+      </button>
+    </div>
+
+    <!-- ── Game area (hidden until started) ── -->
+    <div id="memo-game-area" style="display:none">
+      <div class="memo-stats">
+        <div class="memo-stat"><i data-lucide="mouse-pointer-2" style="width:18px;height:18px;color:var(--clr-primary);" aria-hidden="true"></i> Movimientos: <span id="memo-moves">0</span></div>
+        <div class="memo-stat"><i data-lucide="check-circle-2" style="width:18px;height:18px;color:var(--clr-primary);" aria-hidden="true"></i> Pares: <span id="memo-pairs">0</span> / 10</div>
+        <button class="btn btn-outline" id="btn-memo-restart" style="padding:.4rem 1rem;font-size:.85rem;" aria-label="Reiniciar memorama">
+          Reiniciar
+        </button>
+      </div>
+
+      <!-- Card grid -->
+      <div class="memo-grid" id="memo-grid" aria-label="Tablero de memorama"></div>
+
+      <!-- Win message -->
+      <div class="memo-win" id="memo-win" aria-live="polite">
+        <div class="memo-win-trophy">&#127881;</div>
+        <h3>¡Felicidades!</h3>
+        <p id="memo-win-msg"></p>
+        <button class="btn-memo-restart" id="btn-memo-win-restart">Jugar de nuevo</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════ -->
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo-wrap">
+          <img src="assets/logo_universidad.png" alt="Escudo UPGC" class="footer-logo-img">
+          <div>
+            <div class="footer-brand-name">Universidad Pablo Guardado Chávez</div>
+            <div style="font-size:.75rem;opacity:.6;margin-top:.2rem;">Lic. Químico Farmacobiólogo</div>
+          </div>
+        </div>
+        <p>Proyecto integrador: <em>"Desde el Primer Latido: Riesgos Farmacéuticos en el Embarazo"</em>. 2do Semestre, periodo escolar Febrero–Julio 2026.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Secciones</h4>
+        <ul>
+          <li><a href="introduccion.html">Introducción</a></li>
+          <li><a href="desarrollo.html">Desarrollo</a></li>
+          <li><a href="medicamentos.html">Medicamentos</a></li>
+          <li><a href="plantas.html">Plantas medicinales</a></li>
+          <li><a href="factores.html">Factores y tecnología</a></li>
+          <li><a href="conclusiones.html">Conclusiones</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Más info</h4>
+        <ul>
+          <li><a href="equipo.html">Equipo de trabajo</a></li>
+          <li><a href="referencias.html">Referencias</a></li>
+          <li><a href="juegos.html" style="color:var(--clr-accent);font-weight:700;">Juegos Interactivos</a></li>
+          <li><a href="index.html">Inicio</a></li>
+        </ul>
+        <div style="margin-top:1.5rem;">
+          <h4>Recursos externos</h4>
+          <ul>
+            <li><a href="https://www.who.int" target="_blank" rel="noopener">OMS</a></li>
+            <li><a href="https://www.gob.mx/cofepris" target="_blank" rel="noopener">COFEPRIS</a></li>
+            <li><a href="https://www.inegi.org.mx" target="_blank" rel="noopener">INEGI</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Líneas de apoyo</h4>
+        <ul class="footer-contact" style="margin-bottom:1.5rem;">
+          <li><span class="icon" style="color:var(--clr-accent);"><i data-lucide="phone" class="lucide-icon" aria-hidden="true"></i></span><div><div style="font-size:.75rem;opacity:.8;margin-bottom:.2rem;">Línea Materna</div><a href="tel:01800" style="font-weight:700;color:white;font-size:1.1rem;">01 800</a></div></li>
+          <li><span class="icon" style="color:var(--clr-accent);"><i data-lucide="heart-handshake" class="lucide-icon" aria-hidden="true"></i></span><div><div style="font-size:.75rem;opacity:.8;margin-bottom:.2rem;">Ayuda mujer embarazada</div><a href="tel:9999232332" style="font-weight:700;color:white;font-size:1.1rem;">999 923 2332</a></div></li>
+        </ul>
+        <h4>Contacto</h4>
+        <ul class="footer-contact">
+          <li><span class="icon"><i data-lucide="map-pin" class="lucide-icon" aria-hidden="true"></i></span><span>Tuxtla Gutiérrez, Chiapas, México</span></li>
+          <li><span class="icon"><i data-lucide="user-round" class="lucide-icon" aria-hidden="true"></i></span><span>Asesores: Mtro. Pérez Chávez R.C. &amp; Mtro. López Ventura D.</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Universidad Pablo Guardado Chávez · Proyecto Integrador QFB</span>
+      <span>Las imágenes e ilustraciones son de elaboración propia o uso libre (CC).</span>
+    </div>
+  </div>
+</footer>
+
+<button id="back-to-top" aria-label="Volver arriba">&#8679;</button>
+
+<script src="js/main.js"></script>
+<script>
+/* =========================================================
+   QUIZ DATA – 15 preguntas
+   Para agregar imagen: pon la ruta en `image` (relativa a la raíz)
+   Ej: image: 'assets/quiz/q1.jpg'
+   Si `image` está vacío, se muestra el placeholder.
+   ========================================================= */
+const QUIZ_QUESTIONS = [
+    {
+    id: 1,
+    type: 'multiple',
+    question: '¿En qué etapa del embarazo el bebé es más sensible a algunos medicamentos?',
+    image: 'assets/preguntas/P-1.jpeg', /* ← Agrega aquí la ruta de la imagen */
+    options: [
+      'Durante el primer trimestre',
+      'Al finalizar el embarazo',
+      'Después de nacer',
+      'En cualquier etapa el riesgo es igual'
+    ],
+    correct: 0
+  },
+    {
+    id: 2,
+    type: 'multiple',
+    question: 'Si un médico te receta un medicamento durante el embarazo, ¿qué debes hacer?',
+    image: 'assets/preguntas/P-2.jpeg', /* ← Agrega aquí la ruta de la imagen */
+    options: [
+      'Dejar de tomarlo al sentirme mejor',
+      'Tomar un remedio naturista en su lugar',
+      'Seguir indicaciones al pie de la letra',
+      'Tomar la mitad de la dosis'
+    ],
+    correct: 2
+  },
+    {
+    id: 3,
+    type: 'truefalse',
+    question: '¿Los medicamentos pueden llegar al bebé durante el embarazo?',
+    image: 'assets/preguntas/P-3.jpeg', /* ← Agrega aquí la ruta de la imagen */
+    options: ['Verdadero', 'Falso'],
+    correct: 0
+  },
+    {
+    id: 4,
+    type: 'multiple',
+    question: '¿Cuál de estas plantas puede ser peligrosa durante el embarazo?',
+    image: 'assets/preguntas/P-4.jpeg', /* ← Agrega aquí la ruta de la imagen */
+    options: ['Espinaca', 'Pepino', 'Lechuga', 'Ruda'],
+    correct: 3
+  },
+  {
+    id: 5,
+    type: 'multiple',
+    question: '¿Qué harías si estás embarazada y te sientes enferma?',
+    image: 'assets/preguntas/P-5.jpeg', /* ← Agrega aquí la ruta de la imagen */
+    options: [
+      'Tomar el medicamento que te recomendaron hace tiempo',
+      'Pedirle a una amiga que me aconseje qué tomar',
+      'Consultar a mi médico de confianza antes',
+      'Esperar a que disminuya la molestia y tomar un remedio'
+    ],
+    correct: 2
+  },
+  {
+    id: 6,
+    type: 'multiple',
+    question: '¿Por qué no debes confiar en los consejos encontrados en internet?',
+    image: 'assets/preguntas/P-6.jpeg', /* ← Agrega aquí la ruta de la imagen */
+    options: [
+      'Porque exageran la gravedad del asunto',
+      'Son publicaciones falsas',
+      'No toda la información es confiable',
+      'Sólo los médicos usan internet'
+    ],
+    correct: 2
+  },
+  {
+    id: 7,
+    type: 'truefalse',
+    question: '¿Es buena idea tomar el medicamento que le funcionó a otra mujer embarazada?',
+    image: 'assets/preguntas/P-7.jpeg', /* ← Agrega aquí la ruta de la imagen */
+    options: ['Verdadero', 'Falso'],
+    correct: 1
+  },
+  {
+    id: 8,
+    type: 'truefalse',
+    question: '¿Es seguro tomar medicamentos por tu cuenta durante el embarazo?',
+    image: 'assets/preguntas/P-8.jpeg', /* ← Agrega aquí la ruta de la imagen */
+    options: ['Verdadero', 'Falso'],
+    correct: 1
+  },
+  {
+    id: 9,
+    type: 'truefalse',
+    question: '¿Las plantas medicinales siempre son seguras por ser naturales?',
+    image: 'assets/preguntas/P-9.jpeg', /* ← Agrega aquí la ruta de la imagen */
+    options: ['Verdadero', 'Falso'],
+    correct: 1
+  },
+  {
+    id: 10,
+    type: 'multiple',
+    question: '¿Qué puede pasar si tomas un medicamento en una dosis mayor a la indicada?',
+    image: 'assets/preguntas/P-10.jpeg', /* ← Agrega aquí la ruta de la imagen */
+    options: [
+      'Hará efecto más rápido',
+      'Causa intoxicación y efectos dañinos',
+      'No pasará nada',
+      'Causa más sueño'
+    ],
+    correct: 1
+  },
+  {
+    id: 11,
+    type: 'multiple',
+    question: '¿Cuál de estos hábitos ayuda a cuidar tu embarazo?',
+    image: 'assets/preguntas/P-11.jpeg', /* ← Agrega aquí la ruta de la imagen */
+    options: [
+      'Acudir a consultas frecuentes',
+      'Tomar medicamentos sin leer las indicaciones',
+      'Automedicarse',
+      'Seguir consejos de internet'
+    ],
+    correct: 0
+  },
+  {
+    id: 12,
+    type: 'multiple',
+    question: '¿Cuál es el mejor consejo para proteger tu salud y la de tu bebé?',
+    image: 'assets/preguntas/P-12.jpeg', /* ← Agrega aquí la ruta de la imagen */
+    options: [
+      'Suspender toda clase de medicación',
+      'Informarse bien y consultar al personal de salud',
+      'Seguir consejos de amistades cercanas',
+      'Tomar remedios caseros sin supervisión'
+    ],
+    correct: 1
+  },
+  {
+    id: 13,
+    type: 'multiple',
+    question: 'Si tienes dolor o fiebre durante el embarazo, ¿qué es lo mejor?',
+    image: 'assets/preguntas/P-13.jpeg', /* ← Agrega aquí la ruta de la imagen */
+    options: [
+      'Tomar cualquier medicamento que haya en casa',
+      'Consultar al médico antes de que sea más grave',
+      'Esperar a que pase la molestia',
+      'Pedirle medicamentos a un familiar'
+    ],
+    correct: 1
+  },
+  {
+    id: 14,
+    type: 'multiple',
+    question: '¿Qué harías antes de tomar un té o remedio natural si estás embarazada?',
+    image: 'assets/preguntas/P-14.jpeg', /* ← Agrega aquí la ruta de la imagen */
+    options: [
+      'Tomarlo porque es natural',
+      'Preguntar a mi madre si ella tomó algo similar',
+      'Buscar en redes si otras mujeres lo toman',
+      'Consultar al médico'
+    ],
+    correct: 3
+  },
+  {
+    id: 15,
+    type: 'multiple',
+    question: '¿Cuál es el principal riesgo de automedicarse durante el embarazo?',
+    image: 'assets/preguntas/P-15.jpeg', /* ← Agrega aquí la ruta de la imagen */
+    options: [
+      'Dormir más de lo normal',
+      'Poner en riesgo a la madre y al bebé',
+      'Tener más apetito',
+      'Tener más sed'
+    ],
+    correct: 1
+  }
+];
+
+/* =========================================================
+   QUIZ ENGINE  – v2: timer continúa tras responder, auto-avance
+   ========================================================= */
+(function () {
+  const TOTAL_TIME = 20;
+
+  /* Inline SVG icons (sin emojis) */
+  const ICO = {
+    check : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="20 6 9 16 4 11"/></svg>',
+    x     : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+    clock : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    img   : '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>',
+    trophy: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4a2 2 0 0 1-2-2V5h4"/><path d="M18 9h2a2 2 0 0 0 2-2V5h-4"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="M6 5h12v6a6 6 0 0 1-12 0V5z"/></svg>',
+  };
+
+  let currentQ    = 0;
+  let timerInt    = null;
+  let timeLeft    = TOTAL_TIME;
+  let answered    = false;   // flag: did user click an answer this question?
+  let userAnswers = [];
+
+  const startScreen    = document.getElementById('quiz-start-screen');
+  const questionScreen = document.getElementById('quiz-question-screen');
+  const resultsScreen  = document.getElementById('quiz-results-screen');
+  const qLabel         = document.getElementById('quiz-q-label');
+  const progressBar    = document.getElementById('quiz-progress-bar');
+  const timerNum       = document.getElementById('quiz-timer-num');
+  const timerRing      = document.getElementById('quiz-timer-ring');
+  const timerEl        = document.getElementById('quiz-timer');
+  const imgWrap        = document.getElementById('quiz-img-wrap');
+  const questionText   = document.getElementById('quiz-question-text');
+  const optionsEl      = document.getElementById('quiz-options');
+  const feedbackEl     = document.getElementById('quiz-feedback');
+  const advanceHint    = document.getElementById('quiz-advance-hint');
+
+  document.getElementById('btn-start-quiz').addEventListener('click', startQuiz);
+  document.getElementById('btn-restart-quiz').addEventListener('click', restartQuiz);
+
+  /* ── Start / Restart ── */
+  function startQuiz() {
+    currentQ    = 0;
+    userAnswers = [];
+    startScreen.style.display    = 'none';
+    resultsScreen.style.display  = 'none';
+    questionScreen.style.display = 'block';
+    showQuestion();
+  }
+
+  function restartQuiz() {
+    clearInterval(timerInt);
+    resultsScreen.style.display = 'none';
+    startScreen.style.display   = 'block';
+  }
+
+  /* ── Render question ── */
+  function showQuestion() {
+    answered = false;
+    advanceHint.style.display = 'none';
+    const q = QUIZ_QUESTIONS[currentQ];
+
+    qLabel.textContent     = 'Pregunta ' + (currentQ + 1) + ' / ' + QUIZ_QUESTIONS.length;
+    progressBar.style.width = (currentQ / QUIZ_QUESTIONS.length * 100) + '%';
+
+    // Image or placeholder
+    imgWrap.innerHTML = q.image
+      ? '<div class="quiz-question-img"><img src="' + q.image + '" alt="Imagen pregunta ' + (currentQ+1) + '"></div>'
+      : '<div class="quiz-question-img-placeholder">' + ICO.img + '<span style="font-size:.75rem;color:var(--clr-text-muted);font-weight:600;margin-top:.4rem;">Imagen pregunta ' + (currentQ+1) + '</span></div>';
+
+    questionText.textContent = q.question;
+
+    // Options
+    const isTF = q.type === 'truefalse';
+    optionsEl.className  = 'quiz-options' + (isTF ? ' two-col' : '');
+    optionsEl.innerHTML  = q.options.map((opt, i) => {
+      const tfClass = isTF ? (i === 0 ? ' tf-true' : ' tf-false') : '';
+      return '<button class="quiz-opt' + tfClass + '" data-idx="' + i + '">' + opt + '</button>';
+    }).join('');
+    optionsEl.querySelectorAll('.quiz-opt').forEach(btn => {
+      btn.addEventListener('click', () => selectAnswer(parseInt(btn.dataset.idx)));
+    });
+
+    feedbackEl.textContent = '';
+    feedbackEl.className   = 'quiz-feedback-msg';
+
+    startTimer();
+  }
+
+  /* ── Timer (never pauses) ── */
+  function startTimer() {
+    clearInterval(timerInt);
+    timeLeft = TOTAL_TIME;
+    timerEl.classList.remove('danger');
+    updateTimerUI();
+
+    timerInt = setInterval(() => {
+      timeLeft--;
+      updateTimerUI();
+      if (timeLeft <= 5) timerEl.classList.add('danger');
+
+      if (timeLeft <= 0) {
+        clearInterval(timerInt);
+        onTimerEnd();
+      }
+    }, 1000);
+  }
+
+  function updateTimerUI() {
+    timerNum.textContent = timeLeft;
+    timerRing.style.setProperty('--pct', (timeLeft / TOTAL_TIME * 100).toFixed(1) + '%');
+  }
+
+  /* Called when timer reaches 0 (whether or not user answered) */
+  function onTimerEnd() {
+    if (!answered) {
+      // User didn't answer — reveal correct and record as timeout
+      lockOptions();
+      revealCorrect();
+      feedbackEl.innerHTML = ICO.clock + ' Tiempo agotado. Correcta: <strong>' + QUIZ_QUESTIONS[currentQ].options[QUIZ_QUESTIONS[currentQ].correct] + '</strong>';
+      feedbackEl.className = 'quiz-feedback-msg timeout';
+      userAnswers.push({ answered: false, selectedIdx: null, correct: false });
+    }
+    // Show "Avanzando..." hint then move on
+    advanceHint.style.display = 'block';
+    setTimeout(advance, 900);
+  }
+
+  /* ── User selects an answer ── */
+  function selectAnswer(idx) {
+    if (answered) return;   // ignore extra clicks
+    answered = true;
+
+    const q         = QUIZ_QUESTIONS[currentQ];
+    const isCorrect = idx === q.correct;
+    lockOptions();
+    revealCorrect();
+
+    const selectedBtn = optionsEl.querySelector('[data-idx="' + idx + '"]');
+    if (isCorrect) {
+      selectedBtn.classList.add('correct');
+      feedbackEl.innerHTML = ICO.check + ' ¡Correcto! ' + q.options[q.correct];
+      feedbackEl.className = 'quiz-feedback-msg correct';
+    } else {
+      selectedBtn.classList.add('incorrect');
+      feedbackEl.innerHTML = ICO.x + ' Incorrecto. Correcta: <strong>' + q.options[q.correct] + '</strong>';
+      feedbackEl.className = 'quiz-feedback-msg incorrect';
+    }
+    userAnswers.push({ answered: true, selectedIdx: idx, correct: isCorrect });
+    // Timer keeps running — onTimerEnd will fire when it hits 0
+  }
+
+  function lockOptions() {
+    optionsEl.querySelectorAll('.quiz-opt').forEach(btn => { btn.disabled = true; });
+  }
+
+  function revealCorrect() {
+    const correctBtn = optionsEl.querySelector('[data-idx="' + QUIZ_QUESTIONS[currentQ].correct + '"]');
+    if (correctBtn) correctBtn.classList.add('reveal');
+  }
+
+  function advance() {
+    currentQ++;
+    if (currentQ >= QUIZ_QUESTIONS.length) showResults();
+    else showQuestion();
+  }
+
+  /* ── Results screen ── */
+  function showResults() {
+    clearInterval(timerInt);
+    questionScreen.style.display = 'none';
+    resultsScreen.style.display  = 'block';
+    progressBar.style.width      = '100%';
+
+    const correctCount = userAnswers.filter(a => a.correct).length;
+    const total        = QUIZ_QUESTIONS.length;
+    const pct          = correctCount / total;
+
+    document.getElementById('results-num').textContent = correctCount;
+    document.getElementById('results-den').textContent = '/ ' + total;
+
+    let title, subtitle;
+    if (pct === 1)       { title = '¡Perfecto!';        subtitle = '¡Respondiste todo correctamente! Eres un experto en farmacología prenatal.'; }
+    else if (pct >= 0.8) { title = '¡Excelente!';       subtitle = 'Muy buen desempeño. Conoces bien los riesgos farmacéuticos en el embarazo.'; }
+    else if (pct >= 0.6) { title = '¡Bien hecho!';      subtitle = 'Buen resultado. Repasa las respuestas incorrectas para reforzar tu aprendizaje.'; }
+    else if (pct >= 0.4) { title = 'Sigue practicando'; subtitle = 'Hay áreas que puedes mejorar. Revisa la retroalimentación y vuelve a intentarlo.'; }
+    else                 { title = '¡No te rindas!';    subtitle = 'Repasa el contenido del proyecto y vuelve a intentarlo.'; }
+
+    document.getElementById('results-title').textContent    = title;
+    document.getElementById('results-subtitle').textContent = subtitle;
+
+    const list = document.getElementById('results-list');
+    list.innerHTML = QUIZ_QUESTIONS.map((q, i) => {
+      const ua = userAnswers[i];
+      let statusClass, iconSVG, statusLabel = '';
+
+      if (!ua || !ua.answered) {
+        statusClass = 'skip';
+        iconSVG     = ICO.clock;
+        statusLabel = 'Sin respuesta (tiempo agotado)';
+      } else if (ua.correct) {
+        statusClass = 'ok';
+        iconSVG     = ICO.check;
+      } else {
+        statusClass = 'fail';
+        iconSVG     = ICO.x;
+      }
+
+      const userAns = (ua && ua.selectedIdx !== null)
+        ? '<div class="result-answer ' + (ua.correct ? 'user-correct' : 'user-wrong') + '">Tu respuesta: ' + q.options[ua.selectedIdx] + '</div>'
+        : '';
+
+      const correctAns = (!ua || !ua.correct)
+        ? '<div class="result-answer correct-ans">' + ICO.check + ' Correcta: ' + q.options[q.correct] + '</div>'
+        : '';
+
+      const timeLabel = statusLabel
+        ? '<div class="result-answer timeout">' + statusLabel + '</div>' : '';
+
+      return '<div class="result-item">' +
+        '<div class="result-item-header">' +
+          '<div class="result-status-icon ' + statusClass + '">' + iconSVG + '</div>' +
+          '<div class="result-item-q">P' + (i+1) + '. ' + q.question + '</div>' +
+        '</div>' +
+        ((userAns || correctAns || timeLabel) ? '<div class="result-item-body">' + userAns + correctAns + timeLabel + '</div>' : '') +
+      '</div>';
+    }).join('');
+
+    resultsScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+})();
+
+
+/* =========================================================
+   MEMORAMA DATA – 10 pares (medicamento/planta ↔ efecto)
+   ========================================================= */
+// Pares: card de nombre (planta/medicamento) ↔ card de efecto
+// badge: null | { text, type: 'danger'|'caution' }
+const MEMO_PAIRS = [
+  {
+    id: 1,
+    nombre: { label: 'Sábila / Aloe Vera', image: 'assets/planta_aloe.png',
+              badge: { text: 'Contraindicado', type: 'danger' }, bg: '#EAE4F7' },
+    efecto:  { text: 'El látex interno (de color amarillo) es un potente laxante con efecto estimulante uterino.', bg: '#D4EEF5' },
+  },
+  {
+    id: 2,
+    nombre: { label: 'Epazote', image: 'assets/planta_epazote.png',
+              badge: { text: 'Evitar', type: 'danger' }, bg: '#FCE4EC' },
+    efecto:  { text: 'Potencial abortivo y neurotóxico en dosis medicinales.', bg: '#FFF8E1' },
+  },
+  {
+    id: 3,
+    nombre: { label: 'Paracetamol', image: 'assets/med_paracetamol.png',
+              badge: null, bg: '#EAE4F7' },
+    efecto:  { text: 'Analgésico seguro durante el embarazo, puede inhibir dolores de cabeza.', bg: '#D4EEF5' },
+  },
+  {
+    id: 4,
+    nombre: { label: 'Ibuprofeno', image: 'assets/med_ibuprofeno.png',
+              badge: null, bg: '#FCE4EC' },
+    efecto:  { text: 'Puede implicar riesgos durante el tercer trimestre del embarazo.', bg: '#FFF8E1' },
+  },
+  {
+    id: 5,
+    nombre: { label: 'Talidomida', image: 'assets/med_talidomida.png',
+              badge: null, bg: '#FFF8E1' },
+    efecto:  { text: 'Fue el caso más conocido de teratogenicidad farmacológica.', bg: '#FCE4EC' },
+  },
+  {
+    id: 6,
+    nombre: { label: 'Antiácidos', image: 'assets/med_antiacidos.png',
+              badge: null, bg: '#D4EEF5' },
+    efecto:  { text: 'Usados para náuseas, vómito y acidez estomacal.', bg: '#EAE4F7' },
+  },
+  {
+    id: 7,
+    nombre: { label: 'Ruda', image: 'assets/planta_ruda.png',
+              badge: { text: 'Abortiva', type: 'danger' }, bg: '#EAE4F7' },
+    efecto:  { text: 'Puede provocar contracciones uterinas y aumentar el riesgo de aborto.', bg: '#D4EEF5' },
+  },
+  {
+    id: 8,
+    nombre: { label: 'Árnica', image: 'assets/planta_arnica.png',
+              badge: { text: 'Tóxica', type: 'danger' }, bg: '#FCE4EC' },
+    efecto:  { text: 'Puede causar toxicidad neurológica y cardiovascular durante el embarazo.', bg: '#FFF8E1' },
+  },
+  {
+    id: 9,
+    nombre: { label: 'Manzanilla', image: 'assets/planta_manzanilla.png',
+              badge: { text: 'Precaución', type: 'caution' }, bg: '#FFF8E1' },
+    efecto:  { text: 'En grandes dosis puede causar contracciones uterinas e interactuar con anticoagulantes.', bg: '#FCE4EC' },
+  },
+  {
+    id: 10,
+    nombre: { label: 'Jengibre', image: 'assets/planta_jengibre.png',
+              badge: { text: 'Dosis limitada', type: 'caution' }, bg: '#D4EEF5' },
+    efecto:  { text: 'Eficaz para náuseas del embarazo (máx. 1g/día). Dosis elevadas pueden causar sangrado por su efecto anticoagulante.', bg: '#EAE4F7' },
+  },
+];
+
+/* =========================================================
+   MEMORAMA ENGINE
+   ========================================================= */
+
+// Color único por par — mismo tono en ambas cartas del par
+const PAIR_COLORS = [
+  '#E8E0F8',  // 1 lavanda
+  '#F9D5E5',  // 2 rosa
+  '#C8F0E0',  // 3 menta
+  '#FFE2C4',  // 4 durazno
+  '#FFF3A0',  // 5 dorado
+  '#C4ECEC',  // 6 aqua
+  '#CDD2F4',  // 7 periwinkle
+  '#FFD6D0',  // 8 salmón
+  '#D4ECC8',  // 9 salvia
+  '#C4E8F8',  // 10 cielo
+];
+
+(function () {
+  let cards       = [];
+  let flipped     = [];
+  let matched     = 0;
+  let moves       = 0;
+  let locked      = false;
+
+  const startScreen = document.getElementById('memo-start');
+  const gameArea    = document.getElementById('memo-game-area');
+  const grid        = document.getElementById('memo-grid');
+  const movesEl     = document.getElementById('memo-moves');
+  const pairsEl     = document.getElementById('memo-pairs');
+  const winEl       = document.getElementById('memo-win');
+  const winMsg      = document.getElementById('memo-win-msg');
+
+  // "Iniciar Juego" → preview + start
+  document.getElementById('btn-memo-start').addEventListener('click', startMemoGame);
+  // "Reiniciar" → back to start screen
+  document.getElementById('btn-memo-restart').addEventListener('click', showStart);
+  // "Jugar de nuevo" (win overlay) → back to start screen
+  document.getElementById('btn-memo-win-restart').addEventListener('click', showStart);
+
+  // Show start screen (initial state)
+  function showStart() {
+    startScreen.style.display = 'flex';
+    gameArea.style.display    = 'none';
+    winEl.classList.remove('visible');
+    grid.innerHTML = '';
+    cards = []; flipped = []; moves = 0; matched = 0; locked = false;
+    movesEl.textContent = '0';
+    pairsEl.textContent = '0';
+  }
+
+  // Start game: build → render → 2-second preview
+  function startMemoGame() {
+    startScreen.style.display = 'none';
+    gameArea.style.display    = 'block';
+    winEl.classList.remove('visible');
+    moves = 0; matched = 0; flipped = []; locked = true;
+    movesEl.textContent = '0';
+    pairsEl.textContent = '0';
+    buildCards();
+    renderGrid();
+
+    // Flip all cards face-up for 2 s, then flip back and unlock
+    const allEls = grid.querySelectorAll('.memo-card');
+    allEls.forEach(c => { c.classList.add('flipped', 'preview'); });
+
+    setTimeout(() => {
+      allEls.forEach(c => { c.classList.remove('flipped'); });
+      // Wait for flip-back animation (600ms) before unlocking
+      setTimeout(() => {
+        allEls.forEach(c => c.classList.remove('preview'));
+        locked = false;
+      }, 650);
+    }, 2000);
+  }
+
+  function buildCards() {
+    cards = [];
+    MEMO_PAIRS.forEach((pair, i) => {
+      const color = PAIR_COLORS[i % PAIR_COLORS.length];
+      cards.push({ pairId: pair.id, type: 'nombre', data: pair.nombre, color });
+      cards.push({ pairId: pair.id, type: 'efecto', data: pair.efecto, color });
+    });
+    // Fisher-Yates shuffle
+    for (let i = cards.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [cards[i], cards[j]] = [cards[j], cards[i]];
+    }
+  }
+
+  function buildBackFace(card) {
+    const bg = card.color;
+    if (card.type === 'nombre') {
+      const d = card.data;
+      const badgeHTML = d.badge
+        ? '<span class="memo-badge ' + d.badge.type + '"><span class="memo-badge-dot"></span>' + d.badge.text + '</span>'
+        : '';
+      return '<div class="memo-face back type-nombre" style="background:' + bg + '">' +
+               badgeHTML +
+               '<img src="' + d.image + '" class="memo-card-img" alt="' + d.label + '" loading="lazy">' +
+               '<div class="memo-card-label">' + d.label + '</div>' +
+             '</div>';
+    } else {
+      const d = card.data;
+      return '<div class="memo-face back type-efecto" style="background:' + bg + '">' +
+               '<div class="memo-effect-text">' + d.text + '</div>' +
+             '</div>';
+    }
+  }
+
+  function renderGrid() {
+    grid.innerHTML = '';
+    cards.forEach((card, idx) => {
+      const el = document.createElement('div');
+      el.className   = 'memo-card';
+      el.dataset.idx = idx;
+      el.setAttribute('role', 'button');
+      el.setAttribute('aria-label', 'Carta ' + (idx+1));
+      el.setAttribute('tabindex', '0');
+
+      el.innerHTML =
+        '<div class="memo-card-inner">' +
+          '<div class="memo-face front">' +
+            '<div class="memo-card-pattern"></div>' +
+            '<svg class="memo-card-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+              '<circle cx="24" cy="24" r="20" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>' +
+              '<path d="M24 12 L24 36 M12 24 L36 24" stroke="rgba(255,255,255,0.6)" stroke-width="3" stroke-linecap="round"/>' +
+            '</svg>' +
+          '</div>' +
+          buildBackFace(card) +
+        '</div>';
+
+      el.addEventListener('click', () => flipCard(el, idx));
+      el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') flipCard(el, idx); });
+      grid.appendChild(el);
+    });
+  }
+
+  function flipCard(el, idx) {
+    if (locked) return;
+    if (el.classList.contains('flipped') || el.classList.contains('matched')) return;
+
+    el.classList.add('flipped');
+    flipped.push({ el, idx });
+
+    if (flipped.length === 2) {
+      moves++;
+      movesEl.textContent = moves;
+      checkMatch();
+    }
+  }
+
+  function checkMatch() {
+    locked = true;
+    const [a, b] = flipped;
+    const cardA  = cards[a.idx];
+    const cardB  = cards[b.idx];
+
+    if (cardA.pairId === cardB.pairId && cardA.type !== cardB.type) {
+      // Match!
+      setTimeout(() => {
+        a.el.classList.add('matched');
+        b.el.classList.add('matched');
+        a.el.classList.remove('flipped');
+        b.el.classList.remove('flipped');
+        flipped = []; locked = false;
+        matched++;
+        pairsEl.textContent = matched;
+        if (matched === MEMO_PAIRS.length) showWin();
+      }, 500);
+    } else {
+      // No match – shake and flip back
+      setTimeout(() => {
+        a.el.classList.add('shake');
+        b.el.classList.add('shake');
+      }, 300);
+      setTimeout(() => {
+        a.el.classList.remove('flipped', 'shake');
+        b.el.classList.remove('flipped', 'shake');
+        flipped = []; locked = false;
+      }, 800);
+    }
+  }
+
+  function showWin() {
+    winMsg.textContent = '¡Encontraste todos los 10 pares en ' + moves + ' movimiento' + (moves === 1 ? '' : 's') + '! Excelente memoria.';
+    winEl.classList.add('visible');
+    winEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // Show start screen on load
+  showStart();
+})();
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (window.lucide) lucide.createIcons();
+});
+</script>
+</body>
+</html>
