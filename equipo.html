@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Equipo de trabajo del proyecto integrador: estudiantes y asesor de la Licenciatura en Químico Farmacobiólogo, UPGC."/>
-  <title>Equipo | Desde el Primer Latido – UPGC QFB</title>
+  <meta name="description" content="Equipo de trabajo del proyecto integrador: estudiantes y asesor de la Licenciatura en Químico Farmacobiólogo, UPGCH."/>
+  <title>Equipo | Desde el Primer Latido – UPGCH QFB</title>
   <link rel="stylesheet" href="css/styles.css"/>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
@@ -13,22 +13,54 @@
   <style>
     .team-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.5rem; margin:2rem 0; justify-content: center; }
     .advisor-card {
-      background:linear-gradient(135deg,#1E3A5F,#2B5797);
-      color:white; border-radius:var(--r-md);
-      padding:1.5rem; text-align:center;
-      box-shadow:var(--shadow-lg); width:100%; max-width:320px; margin:0 auto 1.5rem;
-      display: flex; flex-direction: column; align-items: center;
+      background: linear-gradient(160deg, #1C3F6E, #1E5095);
+      border-radius: var(--r-md);
+      padding: 1.25rem 1rem;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,.1);
+      box-shadow: 0 6px 20px rgba(28,63,110,.3);
+      display: flex; flex-direction: column; align-items: center; gap: .3rem;
+      transition: transform var(--t-fast), box-shadow var(--t-fast);
+      position: relative; overflow: hidden;
+      color: white;
+    }
+    /* Brillo sutil en la esquina superior */
+    .advisor-card::before {
+      content: ''; position: absolute; top: -40px; right: -40px;
+      width: 100px; height: 100px; border-radius: 50%;
+      background: rgba(255,255,255,.07); pointer-events: none;
+    }
+    .advisor-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(28,63,110,.45);
     }
     .advisor-avatar {
-      width:70px; height:70px; border-radius:50%;
-      background:rgba(255,255,255,.15);
-      border:2px solid rgba(255,255,255,.4);
-      display:flex; align-items:center; justify-content:center;
-      color: white; margin-bottom:1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(255,255,255,.15);
+      border: 2px solid rgba(255,255,255,.35);
+      display: flex; align-items: center; justify-content: center;
+      color: white; margin-bottom: .5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,.2);
     }
-    .advisor-name { font-weight:700; font-size:1.05rem; margin-bottom:.25rem; }
-    .advisor-role { font-size:.8rem; opacity:.8; }
-    .advisor-title { font-size:.75rem; opacity:.6; margin-top:.5rem; }
+    .advisor-name {
+      font-weight: 800; font-size: .95rem;
+      color: #fff; line-height: 1.25;
+    }
+    .advisor-role { font-size: .75rem; color: rgba(255,255,255,.75); }
+    .advisor-title {
+      font-size: .68rem; color: #93C5FD;
+      font-weight: 600; letter-spacing: .02em;
+      background: rgba(255,255,255,.1); padding: .2rem .65rem;
+      border-radius: 100px; margin-top: .3rem;
+      border: 1px solid rgba(147,197,253,.3);
+    }
+    .advisors-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      max-width: 720px;
+      margin: 0 auto 2.5rem;
+    }
     
     .team-card {
       background: var(--clr-surface); border-radius: var(--r-md); padding: 1.25rem; text-align: center;
@@ -61,9 +93,11 @@
     @media (max-width: 768px) {
       .project-info-box { padding: 1.25rem; }
       .info-item-icon { width: 40px; height: 40px; font-size: 1.4rem; }
-      .advisor-card { padding: 1.25rem; max-width: 100%; margin-bottom: 1rem; }
-      .advisor-avatar { width: 60px; height: 60px; }
-      .advisor-name { font-size: 1rem; }
+      /* Asesores: 1 columna en móvil, compactas */
+      .advisors-grid { grid-template-columns: 1fr; max-width: 360px; }
+      .advisor-card { padding: 1rem .9rem; }
+      .advisor-avatar { width: 48px; height: 48px; }
+      .advisor-name { font-size: .9rem; }
       .team-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; }
       .team-card { padding: 1rem; }
       .team-avatar { width: 50px; height: 50px; }
@@ -82,7 +116,7 @@
   <div class="nav-inner">
     <a href="index.html" class="nav-brand">
       <div style="display: flex; gap: 0.5rem; align-items: center; margin-right: 0.25rem;">
-          <img src="assets/logo_universidad.png" alt="Escudo UPGC" class="nav-logo-img" style="border-radius: 50%;">
+          <img src="assets/logo_universidad.png" alt="Escudo UPGCH" class="nav-logo-img" style="border-radius: 50%;">
           <img src="assets/QFB_logo.jpg" alt="Logo QFB" class="nav-logo-img">
         </div>
       <div class="nav-brand-text">
@@ -122,7 +156,7 @@
       <p class="section-subtitle" style="margin:0 auto;">
         Este proyecto integrador fue realizado por estudiantes del 2do semestre, Grupo A1 de la
         Licenciatura en Químico Farmacobiólogo de la Universidad Pablo Guardado Chávez,
-        bajo la asesoría del Mtro. Pérez Chávez Rodolfo Carlos y el Mtro. López Ventura Daniel.
+        bajo la asesoría del Mtro. Pérez Chávez Rodolfo Carlos, el M en C. López Ventura Daniel y el Dr. Gil Mendoza Luis Gustavo.
       </p>
     </div>
 
@@ -153,18 +187,24 @@
     </div>
 
     <!-- Advisors -->
-    <div style="display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap; max-width:900px; margin:0 auto 2rem;">
+    <div class="advisors-grid">
       <div class="advisor-card reveal">
         <div class="advisor-avatar"><i data-lucide="user" size="36"></i></div>
         <div class="advisor-name">Mtro. Pérez Chávez Rodolfo Carlos</div>
         <div class="advisor-role">Asesor del Proyecto Integrador</div>
-        <div class="advisor-title">Maestro en Ciencias &middot; UPGC</div>
+        <div class="advisor-title">Maestro &middot; UPGCH</div>
       </div>
       <div class="advisor-card reveal">
         <div class="advisor-avatar"><i data-lucide="user" size="36"></i></div>
-        <div class="advisor-name">Mtro. López Ventura Daniel</div>
+        <div class="advisor-name">M en C. López Ventura Daniel</div>
         <div class="advisor-role">Asesor del Proyecto Integrador</div>
-        <div class="advisor-title">Maestro &middot; UPGC</div>
+        <div class="advisor-title">Maestro en Ciencias &middot; UPGCH</div>
+      </div>
+      <div class="advisor-card reveal">
+        <div class="advisor-avatar"><i data-lucide="user" size="36"></i></div>
+        <div class="advisor-name">Dr. Gil Mendoza Luis Gustavo</div>
+        <div class="advisor-role">Asesor del Proyecto Integrador</div>
+        <div class="advisor-title">Doctor &middot; UPGCH</div>
       </div>
     </div>
 
@@ -304,7 +344,7 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <div class="logo-wrap">
-          <img src="assets/logo_universidad.png" alt="Escudo UPGC" class="footer-logo-img">
+          <img src="assets/logo_universidad.png" alt="Escudo UPGCH" class="footer-logo-img">
           <div>
             <div class="footer-brand-name">Universidad Pablo Guardado Chávez</div>
             <div style="font-size:.75rem; opacity:.6; margin-top:.2rem;">Lic. Químico Farmacobiólogo</div>
@@ -341,7 +381,7 @@
         <h4>Contacto</h4>
         <ul class="footer-contact">
           <li><span class="icon"><i data-lucide="map-pin" class="lucide-icon" aria-hidden="true"></i></span><span>Tuxtla Gutiérrez, Chiapas, México</span></li>
-          <li><span class="icon"><i data-lucide="user-round" class="lucide-icon" aria-hidden="true"></i></span><span>Asesores: Mtro. Pérez Chávez R.C. &amp; Mtro. López Ventura D.</span></li>
+          <li><span class="icon"><i data-lucide="user-round" class="lucide-icon" aria-hidden="true"></i></span><span>Asesores: Mtro. Pérez Chávez R.C., M en C. López Ventura D. &amp; Dr. Gil Mendoza L.G.</span></li>
         </ul>
       </div>
     </div>
